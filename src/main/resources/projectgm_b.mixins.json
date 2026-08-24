@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "cn.erindax.projectgmb.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "refmap": "projectgm_b.refmap.json",
+  "mixins": [
+    "BlockRemoveLockMixin",
+    "LecternMenuMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

@@ -1,0 +1,14 @@
+{
+	"gamerule.adventureFlowerPot": "冒险模式可对花盆交互",
+	"gamerule.adventureFlowerPot.description": "关闭时冒险模式无法向花盆放花或从花盆取花",
+	"projectgm_b.lock_item_name": "上锁器",
+	"projectgm_b.key_item_name": "钥匙",
+	"commands.projectgm_b.reload": "重载成功",
+	"message.projectgm_b.door_locked": "这扇门上了锁",
+	"message.projectgm_b.door_unlocked": "已开锁",
+	"message.projectgm_b.door_locked_unnamed": "已上锁",
+	"key.projectgm_b.host_broadcast": "主持人全服说话",
+	"hud.projectgm_b.host_broadcast": "全服广播中",
+	"voicechat.category.projectgm_b.host": "主持人",
+	"voicechat.category.projectgm_b.host.tooltip": "主持人全服广播"
+}

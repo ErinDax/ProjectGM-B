@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "projectgm_b",
+  "version": "${version}",
+  "name": "ProjectGM-b",
+  "description": "ProjectGM-b",
+  "authors": [
+    "202037994@qq.com"
+  ],
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "cn.erindax.projectgmb.ProjectGmB"
+    ],
+    "client": [
+      "cn.erindax.projectgmb.client.ProjectGmBClient"
+    ],
+    "voicechat": [
+      "cn.erindax.projectgmb.voice.HostVoicePlugin"
+    ]
+  },
+  "mixins": [
+    "projectgm_b.mixins.json",
+    {
+      "config": "projectgm_b.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=0.19.3",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "fabric-api": "*",
+    "voicechat_api": ">=2.6.0"
+  }
+}
