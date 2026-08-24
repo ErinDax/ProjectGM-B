@@ -3,9 +3,11 @@ package cn.erindax.projectgmb;
 import cn.erindax.projectgmb.lock.DoorLocks;
 import cn.erindax.projectgmb.lock.LockNames;
 import cn.erindax.projectgmb.network.ModNetwork;
+import cn.erindax.projectgmb.vanish.OpVanish;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
@@ -36,6 +38,8 @@ public class ProjectGmB implements ModInitializer {
 		LockNames.reload();
 		ModNetwork.register();
 		DoorLocks.register();
+		ServerTickEvents.END_SERVER_TICK.register(OpVanish::tick);
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> OpVanish.clear());
 		UseBlockCallback.EVENT.register((player, world, hand, hit) -> {
 			if (!(world.getBlockState(hit.getBlockPos()).getBlock() instanceof FlowerPotBlock)) {
 				return InteractionResult.PASS;
