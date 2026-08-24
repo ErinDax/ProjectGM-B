@@ -3,10 +3,11 @@
   "package": "cn.erindax.projectgmb.client.mixin",
   "compatibilityLevel": "JAVA_21",
   "refmap": "projectgm_b.client.refmap.json",
-  "client": [
-    "MicrophoneProcessorMixin",
-    "LecternScreenMixin"
-  ],
+	"client": [
+		"EntityRenderDispatcherMixin",
+		"MicrophoneProcessorMixin",
+		"LecternScreenMixin"
+	],
   "injectors": {
     "defaultRequire": 1
   },

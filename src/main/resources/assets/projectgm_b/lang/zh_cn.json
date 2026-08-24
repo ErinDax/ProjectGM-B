@@ -9,6 +9,8 @@
 	"message.projectgm_b.door_locked_unnamed": "已上锁",
 	"key.projectgm_b.host_broadcast": "主持人全服说话",
 	"hud.projectgm_b.host_broadcast": "全服广播中",
+	"key.projectgm_b.vanish": "创造隐身",
+	"hud.projectgm_b.vanish": "隐身中",
 	"voicechat.category.projectgm_b.host": "主持人",
 	"voicechat.category.projectgm_b.host.tooltip": "主持人全服广播"
 }

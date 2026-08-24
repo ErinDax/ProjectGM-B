@@ -3,10 +3,14 @@
   "package": "cn.erindax.projectgmb.mixin",
   "compatibilityLevel": "JAVA_21",
   "refmap": "projectgm_b.refmap.json",
-  "mixins": [
-    "BlockRemoveLockMixin",
-    "LecternMenuMixin"
-  ],
+	"mixins": [
+		"BlockRemoveLockMixin",
+		"ChunkMapAccessor",
+		"ChunkMapTrackedEntityAccessor",
+		"ChunkMapTrackedEntityMixin",
+		"LecternMenuMixin",
+		"LivingEntityPushMixin"
+	],
   "injectors": {
     "defaultRequire": 1
   },
