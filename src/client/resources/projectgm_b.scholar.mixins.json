@@ -1,0 +1,16 @@
+{
+	"required": false,
+	"package": "cn.erindax.projectgmb.client.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"refmap": "projectgm_b.client.refmap.json",
+	"plugin": "cn.erindax.projectgmb.client.mixin.ScholarCompatMixinPlugin",
+	"client": [
+		"ScholarLecternTakeBookMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}

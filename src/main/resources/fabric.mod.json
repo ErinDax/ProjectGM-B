@@ -24,6 +24,10 @@
     {
       "config": "projectgm_b.client.mixins.json",
       "environment": "client"
+    },
+    {
+      "config": "projectgm_b.scholar.mixins.json",
+      "environment": "client"
     }
   ],
   "depends": {
