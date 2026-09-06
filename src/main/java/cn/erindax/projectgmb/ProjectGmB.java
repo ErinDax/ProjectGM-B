@@ -16,8 +16,10 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.decoration.HangingEntity;
 import net.minecraft.world.entity.decoration.ItemFrame;
-import net.minecraft.world.entity.decoration.Painting;
+import net.minecraft.world.entity.decoration.LeashFenceKnotEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.FlowerPotBlock;
@@ -47,7 +49,7 @@ public class ProjectGmB implements ModInitializer {
 			return lockAdventureFlowerPot(player) ? InteractionResult.FAIL : InteractionResult.PASS;
 		});
 		AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
-			if (!(entity instanceof Painting) && !(entity instanceof ItemFrame frame && frame.getItem().isEmpty())) {
+			if (!isProtectedDecoration(entity)) {
 				return InteractionResult.PASS;
 			}
 			if (player.isSpectator() || player.getAbilities().mayBuild) {
@@ -71,6 +73,13 @@ public class ProjectGmB implements ModInitializer {
 			}
 		});
 		LOGGER.info("ProjectGM-b initialized!");
+	}
+
+	private static boolean isProtectedDecoration(Entity entity) {
+		if (entity instanceof ItemFrame frame) {
+			return frame.getItem().isEmpty();
+		}
+		return entity instanceof HangingEntity && !(entity instanceof LeashFenceKnotEntity);
 	}
 
 	public static boolean lockAdventureFlowerPot(Player player) {
