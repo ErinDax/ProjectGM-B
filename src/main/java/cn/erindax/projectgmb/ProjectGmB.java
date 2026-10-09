@@ -1,19 +1,25 @@
 package cn.erindax.projectgmb;
 
+import cn.erindax.projectgmb.block.ModBlocks;
+import cn.erindax.projectgmb.command.ModCommands;
+import cn.erindax.projectgmb.dance.DanceManager;
+import cn.erindax.projectgmb.item.ModComponents;
+import cn.erindax.projectgmb.item.ModItems;
 import cn.erindax.projectgmb.lock.DoorLocks;
+import cn.erindax.projectgmb.lock.LockHandler;
 import cn.erindax.projectgmb.lock.LockNames;
+import cn.erindax.projectgmb.manage.WandWhitelist;
+import cn.erindax.projectgmb.music.MusicHandler;
 import cn.erindax.projectgmb.network.ModNetwork;
+import cn.erindax.projectgmb.skin.TextureStore;
 import cn.erindax.projectgmb.vanish.OpVanish;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
-import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -38,8 +44,17 @@ public class ProjectGmB implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		LockNames.reload();
+		ModComponents.init();
+		ModBlocks.init();
+		ModItems.init();
 		ModNetwork.register();
 		DoorLocks.register();
+		LockHandler.init();
+		MusicHandler.init();
+		DanceManager.init();
+		TextureStore.KEYS.ensureDirectory();
+		WandWhitelist.reload();
+		ModCommands.register();
 		ServerTickEvents.END_SERVER_TICK.register(OpVanish::tick);
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> OpVanish.clear());
 		UseBlockCallback.EVENT.register((player, world, hand, hit) -> {
@@ -57,16 +72,6 @@ public class ProjectGmB implements ModInitializer {
 			}
 			return InteractionResult.FAIL;
 		});
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
-			dispatcher.register(Commands.literal("projectgmb")
-				.requires(source -> source.hasPermission(2))
-				.then(Commands.literal("reload")
-					.executes(ctx -> {
-						LockNames.reload();
-						ctx.getSource().sendSuccess(() -> Component.translatable("commands.projectgm_b.reload"), true);
-						return 1;
-					})))
-		);
 		ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> {
 			if (success) {
 				LockNames.reload();

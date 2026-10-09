@@ -1,0 +1,6 @@
+{
+	"parent": "projectgm_b:block/template_panel",
+	"textures": {
+		"all": "projectgm_b:block/barrier_panel"
+	}
+}

@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -110,7 +111,8 @@ public final class DoorLocks {
 	}
 
 	private static String stackName(ItemStack stack) {
-		return stack.isEmpty() ? "" : stack.getHoverName().getString();
+		Component name = stack.get(DataComponents.CUSTOM_NAME);
+		return name == null ? "" : name.getString();
 	}
 
 	private static boolean nameMatches(ItemStack stack, String expected) {
