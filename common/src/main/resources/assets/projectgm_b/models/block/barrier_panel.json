@@ -1,0 +1,7 @@
+{
+	"parent": "projectgm_b:block/template_panel",
+	"render_type": "minecraft:cutout",
+	"textures": {
+		"all": "projectgm_b:block/barrier_panel"
+	}
+}

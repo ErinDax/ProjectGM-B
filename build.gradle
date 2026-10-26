@@ -1,66 +1,57 @@
 plugins {
-	id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
+	id 'dev.architectury.loom' version '1.17.493' apply false
+	id 'architectury-plugin' version '3.5.170'
+	id 'com.gradleup.shadow' version '9.6.1' apply false
 }
 
-version = project.mod_version
-group = project.maven_group
+architectury {
+	minecraft = project.minecraft_version
+}
 
-repositories {
-	maven {
-		name = 'henkelmax'
-		url = 'https://maven.maxhenkel.de/repository/public'
+allprojects {
+	group = project.maven_group
+	version = "${project.mod_version}+${project.minecraft_version}"
+}
+
+subprojects {
+	apply plugin: 'dev.architectury.loom'
+	apply plugin: 'architectury-plugin'
+
+	base {
+		archivesName = "${project.archives_name}-${project.name}"
 	}
-	maven {
-		name = 'Modrinth'
-		url = 'https://api.modrinth.com/maven'
-		content {
-			includeGroup 'maven.modrinth'
+
+	repositories {
+		maven {
+			name = 'henkelmax'
+			url = 'https://maven.maxhenkel.de/repository/public'
+		}
+		maven {
+			name = 'Modrinth'
+			url = 'https://api.modrinth.com/maven'
+			content {
+				includeGroup 'maven.modrinth'
+			}
 		}
 	}
-}
 
-loom {
-	splitEnvironmentSourceSets()
+	loom {
+		silentMojangMappingsLicense()
+	}
 
-	mods {
-		"projectgm_b" {
-			sourceSet sourceSets.main
-			sourceSet sourceSets.client
+	dependencies {
+		minecraft "net.minecraft:minecraft:${project.minecraft_version}"
+		mappings loom.officialMojangMappings()
+	}
+
+	java {
+		toolchain {
+			languageVersion = JavaLanguageVersion.of(project.java_version)
 		}
 	}
-}
 
-dependencies {
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings loom.officialMojangMappings()
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-	implementation "de.maxhenkel.voicechat:voicechat-api:${project.voicechat_api_version}"
-	modRuntimeOnly "de.maxhenkel.voicechat:voicechat-api:${project.voicechat_api_version}:fabric-stub"
-	modRuntimeOnly "maven.modrinth:simple-voice-chat:fabric-${project.voicechat_mod_version}"
-	implementation include("javazoom:jlayer:${project.jlayer_version}")
-}
-
-processResources {
-	def version = project.version
-	inputs.property "version", version
-
-	filesMatching("fabric.mod.json") {
-		expand "version": version
+	tasks.withType(JavaCompile).configureEach {
+		options.encoding = 'UTF-8'
+		options.compilerArgs.add('-Xlint:deprecation')
 	}
-}
-
-tasks.withType(JavaCompile).configureEach {
-	it.options.release = 21
-	it.options.encoding = 'UTF-8'
-}
-
-java {
-	withSourcesJar()
-	sourceCompatibility = JavaVersion.VERSION_21
-	targetCompatibility = JavaVersion.VERSION_21
-}
-
-tasks.withType(org.gradle.api.tasks.bundling.AbstractArchiveTask).configureEach {
-	preserveFileTimestamps = true
 }
