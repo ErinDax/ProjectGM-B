@@ -5,11 +5,14 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "BlockRemoveLockMixin",
+    "BlockStateReinforceMixin",
     "ChunkMapAccessor",
     "ChunkMapTrackedEntityAccessor",
     "ChunkMapTrackedEntityMixin",
+    "ExplosionReinforceMixin",
     "LecternMenuMixin",
-    "LivingEntityPushMixin"
+    "LivingEntityPushMixin",
+    "PistonReinforceMixin"
   ],
   "injectors": {
     "defaultRequire": 1
