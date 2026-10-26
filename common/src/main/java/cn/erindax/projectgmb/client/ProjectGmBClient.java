@@ -14,6 +14,7 @@ import cn.erindax.projectgmb.client.music.ClientMusicBlocks;
 import cn.erindax.projectgmb.client.music.MusicBlockRenderer;
 import cn.erindax.projectgmb.client.music.MusicPlayer;
 import cn.erindax.projectgmb.client.music.MusicUploader;
+import cn.erindax.projectgmb.client.reinforce.ReinforceRenderer;
 import cn.erindax.projectgmb.client.render.RemoteTextures;
 import cn.erindax.projectgmb.entity.net.PatrollerListPayload;
 import cn.erindax.projectgmb.entity.net.PatrollerSettingsPayload;
@@ -32,10 +33,14 @@ import cn.erindax.projectgmb.music.net.MusicMenuPayload;
 import cn.erindax.projectgmb.network.Network;
 import cn.erindax.projectgmb.network.SyncDoorLocksPayload;
 import cn.erindax.projectgmb.network.VanishSyncPayload;
+import cn.erindax.projectgmb.reinforce.Reinforcements;
+import cn.erindax.projectgmb.reinforce.net.ReinforceSelectionPayload;
+import cn.erindax.projectgmb.reinforce.net.ReinforceSyncPayload;
 import cn.erindax.projectgmb.skin.TexturePayload;
 import net.minecraft.client.Minecraft;
 
 import java.util.HashSet;
+import java.util.List;
 
 public final class ProjectGmBClient {
 	private ProjectGmBClient() {
@@ -87,6 +92,8 @@ public final class ProjectGmBClient {
 		Network.onClient(MusicBlockUpdatePayload.TYPE, payload ->
 			ClientMusicBlocks.update(payload.pos(), payload.present(), payload.track(), payload.range())
 		);
+		Network.onClient(ReinforceSyncPayload.TYPE, payload -> Reinforcements.setClientView(payload.boxes()));
+		Network.onClient(ReinforceSelectionPayload.TYPE, ReinforceRenderer::select);
 		ClientEvents.DISCONNECT.register(client -> {
 			RemoteTextures.clear();
 			ClientLocks.clear();
@@ -94,9 +101,12 @@ public final class ProjectGmBClient {
 			ClientMusic.clear();
 			ClientMusicBlocks.clear();
 			MusicUploader.reset();
+			Reinforcements.setClientView(List.of());
+			ReinforceRenderer.clear();
 		});
 		LockRenderer.init();
 		MusicBlockRenderer.init();
+		ReinforceRenderer.init();
 		MusicUploader.init();
 		DanceClient.init();
 	}

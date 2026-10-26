@@ -14,6 +14,7 @@ import cn.erindax.projectgmb.lock.LockNames;
 import cn.erindax.projectgmb.manage.WandWhitelist;
 import cn.erindax.projectgmb.music.MusicHandler;
 import cn.erindax.projectgmb.network.ModNetwork;
+import cn.erindax.projectgmb.reinforce.Reinforcements;
 import cn.erindax.projectgmb.platform.ModEvents;
 import cn.erindax.projectgmb.skin.TextureStore;
 import cn.erindax.projectgmb.vanish.OpVanish;
@@ -49,6 +50,7 @@ public final class ProjectGmB {
 		DoorLocks.register();
 		LockHandler.init();
 		MusicHandler.init();
+		Reinforcements.init();
 		DanceManager.init();
 		PatrollerSettingsHandler.init();
 		PatrolRecorder.init();
