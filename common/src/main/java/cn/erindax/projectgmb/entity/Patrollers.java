@@ -50,7 +50,7 @@ public final class Patrollers {
 		patroller.moveTo(start.getX() + 0.5, start.getY(), start.getZ() + 0.5, yaw, 0.0F);
 		patroller.setPatrolName(name);
 		patroller.setWaypoints(route);
-		patroller.finalizeSpawn(level, level.getCurrentDifficultyAt(start), MobSpawnType.COMMAND, null);
+		patroller.finalizeSpawn(level, level.getCurrentDifficultyAt(start), MobSpawnType.COMMAND, null, null);
 		level.addFreshEntity(patroller);
 		return patroller;
 	}

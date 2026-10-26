@@ -1,10 +1,10 @@
 package cn.erindax.projectgmb.music.net;
 
 import cn.erindax.projectgmb.ProjectGmB;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import cn.erindax.projectgmb.network.codec.ByteBufCodecs;
+import cn.erindax.projectgmb.network.codec.CustomPacketPayload;
+import cn.erindax.projectgmb.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
 
 public record MusicDataPayload(String track, int version, int index, int total, byte[] data)
 		implements CustomPacketPayload {
@@ -12,7 +12,7 @@ public record MusicDataPayload(String track, int version, int index, int total, 
 	public static final CustomPacketPayload.Type<MusicDataPayload> TYPE =
 		new CustomPacketPayload.Type<>(ProjectGmB.id("music_data"));
 
-	public static final StreamCodec<RegistryFriendlyByteBuf, MusicDataPayload> STREAM_CODEC = StreamCodec.composite(
+	public static final StreamCodec<FriendlyByteBuf, MusicDataPayload> STREAM_CODEC = StreamCodec.composite(
 		ByteBufCodecs.STRING_UTF8, MusicDataPayload::track,
 		ByteBufCodecs.INT, MusicDataPayload::version,
 		ByteBufCodecs.VAR_INT, MusicDataPayload::index,

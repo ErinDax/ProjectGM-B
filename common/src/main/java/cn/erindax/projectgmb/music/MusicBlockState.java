@@ -1,7 +1,6 @@
 package cn.erindax.projectgmb.music;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -20,16 +19,14 @@ public class MusicBlockState extends SavedData {
 	private static final String TAG_POS = "Pos";
 	private static final String TAG_DATA = "Data";
 
-	private static final SavedData.Factory<MusicBlockState> FACTORY =
-		new SavedData.Factory<>(MusicBlockState::new, MusicBlockState::load, null);
 
 	private final Map<BlockPos, MusicBlock> blocks = new HashMap<>();
 
 	public static MusicBlockState get(ServerLevel level) {
-		return level.getDataStorage().computeIfAbsent(FACTORY, DATA_NAME);
+		return level.getDataStorage().computeIfAbsent(MusicBlockState::load, MusicBlockState::new, DATA_NAME);
 	}
 
-	private static MusicBlockState load(CompoundTag tag, HolderLookup.Provider registries) {
+	private static MusicBlockState load(CompoundTag tag) {
 		MusicBlockState state = new MusicBlockState();
 		ListTag list = tag.getList(TAG_BLOCKS, Tag.TAG_COMPOUND);
 		for (int i = 0; i < list.size(); i++) {
@@ -40,7 +37,7 @@ public class MusicBlockState extends SavedData {
 	}
 
 	@Override
-	public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
+	public CompoundTag save(CompoundTag tag) {
 		ListTag list = new ListTag();
 		for (Map.Entry<BlockPos, MusicBlock> entry : blocks.entrySet()) {
 			CompoundTag item = new CompoundTag();

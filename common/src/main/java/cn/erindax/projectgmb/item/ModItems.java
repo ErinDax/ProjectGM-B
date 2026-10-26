@@ -25,7 +25,7 @@ public final class ModItems {
 			.rarity(Rarity.EPIC)));
 
 	public static final Item KEY = register("key",
-		new KeyItem(new Item.Properties()
+		Platform.keyItem(new Item.Properties()
 			.stacksTo(16)));
 
 	public static final Item PASSWORD_LOCK = register("password_lock",

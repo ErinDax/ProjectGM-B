@@ -1,4 +1,4 @@
-package cn.erindax.projectgmb.neoforge.client;
+package cn.erindax.projectgmb.forge.client;
 
 import cn.erindax.projectgmb.ProjectGmB;
 import cn.erindax.projectgmb.block.DanceBlock;
@@ -15,18 +15,16 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.ChunkRenderTypeSet;
-import net.neoforged.neoforge.client.model.BakedModelWrapper;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.data.ModelProperty;
-import net.neoforged.neoforge.common.util.TriState;
+import net.minecraftforge.client.ChunkRenderTypeSet;
+import net.minecraftforge.client.model.BakedModelWrapper;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
 
 public final class DanceBlockModel extends BakedModelWrapper<BakedModel> {
-
 	private static final ResourceLocation BLOCK_ID = ProjectGmB.id("dance_block");
 	private static final String INVENTORY = "inventory";
 	private static final ModelProperty<BlockState> DISGUISE = new ModelProperty<>();
@@ -36,8 +34,11 @@ public final class DanceBlockModel extends BakedModelWrapper<BakedModel> {
 		super(wrapped);
 	}
 
-	public static void wrap(Map<ModelResourceLocation, BakedModel> models) {
-		models.replaceAll((id, model) -> BLOCK_ID.equals(id.id()) && !INVENTORY.equals(id.variant())
+	public static void wrap(Map<ResourceLocation, BakedModel> models) {
+		models.replaceAll((id, model) -> id instanceof ModelResourceLocation location
+				&& BLOCK_ID.getNamespace().equals(location.getNamespace())
+				&& BLOCK_ID.getPath().equals(location.getPath())
+				&& !INVENTORY.equals(location.getVariant())
 			? new DanceBlockModel(model)
 			: model);
 	}
@@ -77,15 +78,6 @@ public final class DanceBlockModel extends BakedModelWrapper<BakedModel> {
 			return super.getQuads(state, side, rand, data, renderType);
 		}
 		return model(disguise).getQuads(disguise, side, rand, inner(data), renderType);
-	}
-
-	@Override
-	public TriState useAmbientOcclusion(BlockState state, ModelData data, RenderType renderType) {
-		BlockState disguise = data.get(DISGUISE);
-		if (disguise == null) {
-			return super.useAmbientOcclusion(state, data, renderType);
-		}
-		return model(disguise).useAmbientOcclusion(disguise, inner(data), renderType);
 	}
 
 	@Override

@@ -1,7 +1,6 @@
 package cn.erindax.projectgmb.lock;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -20,32 +19,30 @@ public class LockState extends SavedData {
 	private static final String TAG_POS = "Pos";
 	private static final String TAG_DATA = "Data";
 
-	private static final SavedData.Factory<LockState> FACTORY =
-		new SavedData.Factory<>(LockState::new, LockState::load, null);
 
 	private final Map<BlockPos, LockData> locks = new HashMap<>();
 
 	public static LockState get(ServerLevel level) {
-		return level.getDataStorage().computeIfAbsent(FACTORY, DATA_NAME);
+		return level.getDataStorage().computeIfAbsent(LockState::load, LockState::new, DATA_NAME);
 	}
 
-	private static LockState load(CompoundTag tag, HolderLookup.Provider registries) {
+	private static LockState load(CompoundTag tag) {
 		LockState state = new LockState();
 		ListTag list = tag.getList(TAG_LOCKS, Tag.TAG_COMPOUND);
 		for (int i = 0; i < list.size(); i++) {
 			CompoundTag entry = list.getCompound(i);
-			state.locks.put(BlockPos.of(entry.getLong(TAG_POS)), LockData.load(entry.getCompound(TAG_DATA), registries));
+			state.locks.put(BlockPos.of(entry.getLong(TAG_POS)), LockData.load(entry.getCompound(TAG_DATA)));
 		}
 		return state;
 	}
 
 	@Override
-	public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
+	public CompoundTag save(CompoundTag tag) {
 		ListTag list = new ListTag();
 		for (Map.Entry<BlockPos, LockData> entry : locks.entrySet()) {
 			CompoundTag item = new CompoundTag();
 			item.putLong(TAG_POS, entry.getKey().asLong());
-			item.put(TAG_DATA, entry.getValue().save(registries));
+			item.put(TAG_DATA, entry.getValue().save());
 			list.add(item);
 		}
 		tag.put(TAG_LOCKS, list);

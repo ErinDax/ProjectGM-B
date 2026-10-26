@@ -1,12 +1,10 @@
 package cn.erindax.projectgmb.block;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -27,19 +25,12 @@ import org.jetbrains.annotations.Nullable;
 
 public class DanceBlock extends BaseEntityBlock {
 
-	public static final MapCodec<DanceBlock> CODEC = simpleCodec(DanceBlock::new);
-
 	public DanceBlock(Properties properties) {
 		super(properties);
 	}
 
 	@Override
-	protected MapCodec<? extends BaseEntityBlock> codec() {
-		return CODEC;
-	}
-
-	@Override
-	protected RenderShape getRenderShape(BlockState state) {
+	public RenderShape getRenderShape(BlockState state) {
 		return RenderShape.MODEL;
 	}
 
@@ -50,26 +41,34 @@ public class DanceBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
-			Player player, InteractionHand hand, BlockHitResult hitResult) {
+	@SuppressWarnings("deprecation")
+	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+			BlockHitResult hitResult) {
+		InteractionResult result = useItemOn(player.getItemInHand(hand), level, pos, player, hand, hitResult);
+		if (result == InteractionResult.PASS && hand == InteractionHand.MAIN_HAND) {
+			return useWithoutItem(level, pos, player);
+		}
+		return result;
+	}
+
+	private InteractionResult useItemOn(ItemStack stack, Level level, BlockPos pos, Player player, InteractionHand hand,
+			BlockHitResult hitResult) {
 		if (!(stack.getItem() instanceof BlockItem item) || !player.mayBuild()
 				|| !(level.getBlockEntity(pos) instanceof DanceBlockEntity dance)) {
-			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+			return InteractionResult.PASS;
 		}
 		BlockState disguise = disguiseFor(item.getBlock(), player, hand, stack, hitResult);
 		if (disguise == null) {
-			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+			return InteractionResult.PASS;
 		}
 		if (!level.isClientSide()) {
 			dance.setDisguise(disguise);
 			level.playSound(null, pos, disguise.getSoundType().getPlaceSound(), SoundSource.BLOCKS, 1.0F, 0.9F);
 		}
-		return ItemInteractionResult.sidedSuccess(level.isClientSide());
+		return InteractionResult.sidedSuccess(level.isClientSide());
 	}
 
-	@Override
-	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
-			BlockHitResult hitResult) {
+	private InteractionResult useWithoutItem(Level level, BlockPos pos, Player player) {
 		if (!player.isSecondaryUseActive() || !player.mayBuild()
 				|| !(level.getBlockEntity(pos) instanceof DanceBlockEntity dance) || dance.disguise() == null) {
 			return InteractionResult.PASS;
@@ -82,13 +81,15 @@ public class DanceBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+	@SuppressWarnings("deprecation")
+	public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
 		BlockState disguise = disguiseAt(level, pos);
 		return disguise == null ? Shapes.block() : disguise.getShape(level, pos, context);
 	}
 
 	@Override
-	protected VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos,
+	@SuppressWarnings("deprecation")
+	public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos,
 			CollisionContext context) {
 		BlockState disguise = disguiseAt(level, pos);
 		return disguise == null ? Shapes.block() : disguise.getCollisionShape(level, pos, context);

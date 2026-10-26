@@ -1,4 +1,4 @@
-package cn.erindax.projectgmb.neoforge.client;
+package cn.erindax.projectgmb.forge.client;
 
 import cn.erindax.projectgmb.client.render.KeyItemRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.Nullable;
 
 public final class KeyItemExtensions implements IClientItemExtensions {

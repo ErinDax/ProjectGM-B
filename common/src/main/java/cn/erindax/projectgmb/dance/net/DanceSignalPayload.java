@@ -1,10 +1,10 @@
 package cn.erindax.projectgmb.dance.net;
 
 import cn.erindax.projectgmb.ProjectGmB;
+import cn.erindax.projectgmb.network.codec.ByteBufCodecs;
+import cn.erindax.projectgmb.network.codec.CustomPacketPayload;
+import cn.erindax.projectgmb.network.codec.StreamCodec;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 public record DanceSignalPayload(int session, int signal) implements CustomPacketPayload {
 

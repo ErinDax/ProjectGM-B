@@ -10,6 +10,7 @@ import cn.erindax.projectgmb.client.render.PatrollerRenderer;
 import cn.erindax.projectgmb.entity.ModEntities;
 import cn.erindax.projectgmb.item.ModItems;
 import cn.erindax.projectgmb.network.Network;
+import cn.erindax.projectgmb.network.codec.CustomPacketPayload;
 import cn.erindax.projectgmb.platform.Event;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
@@ -23,7 +24,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 public final class ProjectGmBFabricClient implements ClientModInitializer {
 	@Override
@@ -50,6 +50,9 @@ public final class ProjectGmBFabricClient implements ClientModInitializer {
 	}
 
 	private static <T extends CustomPacketPayload> void registerReceiver(Network.Clientbound<T> entry) {
-		ClientPlayNetworking.registerGlobalReceiver(entry.type(), (payload, context) -> Network.handleClient(payload));
+		ClientPlayNetworking.registerGlobalReceiver(entry.type().id(), (client, handler, buf, responseSender) -> {
+			T payload = entry.codec().decode(buf);
+			client.execute(() -> Network.handleClient(payload));
+		});
 	}
 }

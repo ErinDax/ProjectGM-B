@@ -78,7 +78,7 @@ public final class MusicHandler {
 		}
 		switch (payload.action()) {
 			case SELECT -> select(player, held, payload.track());
-			case RANGE -> held.set(ModComponents.MUSIC_RANGE, MusicNoteItem.clampRange(payload.range()));
+			case RANGE -> ModComponents.MUSIC_RANGE.set(held, MusicNoteItem.clampRange(payload.range()));
 			case PLAY -> play(player, held);
 			case PAUSE -> MusicSessions.pausePlayer(player);
 			case RESUME -> MusicSessions.resumePlayer(player);
@@ -88,14 +88,14 @@ public final class MusicHandler {
 
 	private static void select(ServerPlayer player, ItemStack held, String track) {
 		if (track.isEmpty()) {
-			held.remove(ModComponents.MUSIC_TRACK);
+			ModComponents.MUSIC_TRACK.remove(held);
 			return;
 		}
 		if (!MusicStore.exists(track)) {
 			player.displayClientMessage(Component.translatable("item.projectgm_b.music_note.missing", track), true);
 			return;
 		}
-		held.set(ModComponents.MUSIC_TRACK, track);
+		ModComponents.MUSIC_TRACK.set(held, track);
 	}
 
 	private static void play(ServerPlayer player, ItemStack held) {

@@ -1,10 +1,10 @@
 package cn.erindax.projectgmb.music.net;
 
 import cn.erindax.projectgmb.ProjectGmB;
+import cn.erindax.projectgmb.network.codec.CustomPacketPayload;
+import cn.erindax.projectgmb.network.codec.StreamCodec;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.UUID;
 
@@ -20,19 +20,19 @@ public record MusicControlPayload(UUID session, Action action, String track, int
 	public static final CustomPacketPayload.Type<MusicControlPayload> TYPE =
 		new CustomPacketPayload.Type<>(ProjectGmB.id("music_control"));
 
-	public static final StreamCodec<RegistryFriendlyByteBuf, MusicControlPayload> STREAM_CODEC =
+	public static final StreamCodec<FriendlyByteBuf, MusicControlPayload> STREAM_CODEC =
 		CustomPacketPayload.codec(MusicControlPayload::write, MusicControlPayload::new);
 
 	public static MusicControlPayload simple(UUID session, Action action) {
 		return new MusicControlPayload(session, action, "", 0, 0, NO_ENTITY, BlockPos.ZERO, 0);
 	}
 
-	private MusicControlPayload(RegistryFriendlyByteBuf buf) {
+	private MusicControlPayload(FriendlyByteBuf buf) {
 		this(buf.readUUID(), Action.values()[buf.readVarInt()], buf.readUtf(), buf.readInt(), buf.readVarInt(),
 			buf.readInt(), buf.readBlockPos(), buf.readVarInt());
 	}
 
-	private void write(RegistryFriendlyByteBuf buf) {
+	private void write(FriendlyByteBuf buf) {
 		buf.writeUUID(session);
 		buf.writeVarInt(action.ordinal());
 		buf.writeUtf(track);

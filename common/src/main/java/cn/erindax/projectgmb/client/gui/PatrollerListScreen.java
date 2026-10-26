@@ -93,6 +93,7 @@ public class PatrollerListScreen extends Screen {
 
 	@Override
 	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+		renderBackground(graphics);
 		super.render(graphics, mouseX, mouseY, partialTick);
 		int left = (width - rowWidth()) / 2;
 		graphics.drawString(font, title, left, 14, TEXT_COLOR);
@@ -126,8 +127,10 @@ public class PatrollerListScreen extends Screen {
 	private class PatrollerList extends ContainerObjectSelectionList<Row> {
 
 		PatrollerList() {
-			super(Minecraft.getInstance(), PatrollerListScreen.this.width,
-				PatrollerListScreen.this.height - HEADER_HEIGHT - FOOTER_HEIGHT, HEADER_HEIGHT, ROW_HEIGHT);
+			super(Minecraft.getInstance(), PatrollerListScreen.this.width, PatrollerListScreen.this.height,
+				HEADER_HEIGHT, PatrollerListScreen.this.height - FOOTER_HEIGHT, ROW_HEIGHT);
+			setRenderBackground(false);
+			setRenderTopAndBottom(false);
 		}
 
 		void set(List<Row> rows) {

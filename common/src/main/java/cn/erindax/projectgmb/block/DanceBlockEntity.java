@@ -1,7 +1,8 @@
 package cn.erindax.projectgmb.block;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -25,7 +26,7 @@ public class DanceBlockEntity extends BlockEntity {
 	private BlockState disguise;
 
 	public DanceBlockEntity(BlockPos pos, BlockState state) {
-		super(ModBlocks.DANCE_BLOCK_ENTITY, pos, state);
+		super(ModBlockEntities.DANCE_BLOCK, pos, state);
 	}
 
 	@Nullable
@@ -44,8 +45,8 @@ public class DanceBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		super.saveAdditional(tag, registries);
+	protected void saveAdditional(CompoundTag tag) {
+		super.saveAdditional(tag);
 		tag.putBoolean(DISGUISED, disguise != null);
 		if (disguise != null) {
 			tag.put(DISGUISE, NbtUtils.writeBlockState(disguise));
@@ -53,12 +54,13 @@ public class DanceBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		super.loadAdditional(tag, registries);
+	public void load(CompoundTag tag) {
+		super.load(tag);
 		BlockState loaded = null;
 		if (tag.contains(DISGUISE, Tag.TAG_COMPOUND)) {
-			BlockState state = NbtUtils.readBlockState(registries.lookupOrThrow(Registries.BLOCK),
-				tag.getCompound(DISGUISE));
+			HolderGetter<Block> blocks = level != null ? level.holderLookup(Registries.BLOCK)
+				: BuiltInRegistries.BLOCK.asLookup();
+			BlockState state = NbtUtils.readBlockState(blocks, tag.getCompound(DISGUISE));
 			if (!state.isAir() && !(state.getBlock() instanceof DanceBlock)) {
 				loaded = state;
 			}
@@ -72,8 +74,8 @@ public class DanceBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-		return saveCustomOnly(registries);
+	public CompoundTag getUpdateTag() {
+		return saveWithoutMetadata();
 	}
 
 	@Override

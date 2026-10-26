@@ -1,10 +1,9 @@
 package cn.erindax.projectgmb.entity.net;
 
 import cn.erindax.projectgmb.ProjectGmB;
+import cn.erindax.projectgmb.network.codec.CustomPacketPayload;
+import cn.erindax.projectgmb.network.codec.StreamCodec;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 import java.util.List;
 
@@ -34,14 +33,14 @@ public record PatrollerListPayload(List<Entry> entries) implements CustomPacketP
 	public static final CustomPacketPayload.Type<PatrollerListPayload> TYPE =
 		new CustomPacketPayload.Type<>(ProjectGmB.id("patroller_list"));
 
-	public static final StreamCodec<RegistryFriendlyByteBuf, PatrollerListPayload> STREAM_CODEC =
+	public static final StreamCodec<FriendlyByteBuf, PatrollerListPayload> STREAM_CODEC =
 		CustomPacketPayload.codec(PatrollerListPayload::write, PatrollerListPayload::new);
 
-	private PatrollerListPayload(RegistryFriendlyByteBuf buf) {
+	private PatrollerListPayload(FriendlyByteBuf buf) {
 		this(buf.readList(Entry::read));
 	}
 
-	private void write(RegistryFriendlyByteBuf buf) {
+	private void write(FriendlyByteBuf buf) {
 		buf.writeCollection(entries, (b, e) -> e.write(b));
 	}
 

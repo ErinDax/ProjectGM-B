@@ -10,9 +10,9 @@ import cn.erindax.projectgmb.dance.net.DanceOpenPayload;
 import cn.erindax.projectgmb.dance.net.DanceProgressPayload;
 import cn.erindax.projectgmb.dance.net.DanceSignalPayload;
 import cn.erindax.projectgmb.network.Network;
+import com.mojang.blaze3d.audio.OggAudioStream;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.sounds.JOrbisAudioStream;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
@@ -463,7 +463,7 @@ public final class DanceGame {
 			byte[] data = audioData;
 			boolean mp3 = chart.audio().toLowerCase(Locale.ROOT).endsWith(".mp3");
 			return () -> mp3 ? new Mp3AudioStream(new ByteArrayInputStream(data))
-				: new JOrbisAudioStream(new ByteArrayInputStream(data));
+				: new OggAudioStream(new ByteArrayInputStream(data));
 		}
 		if (synth != null && synth.isDone() && !synth.isCompletedExceptionally()) {
 			short[] pcm = synth.join();

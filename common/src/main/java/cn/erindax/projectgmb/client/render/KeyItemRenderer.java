@@ -68,12 +68,13 @@ public final class KeyItemRenderer {
 	}
 
 	private static void vertex(VertexConsumer consumer, PoseStack.Pose pose, Vertex v, Quad quad, int light, int overlay) {
-		consumer.addVertex(pose, v.x(), v.y(), v.z())
-			.setColor(255, 255, 255, 255)
-			.setUv(v.u(), v.v())
-			.setOverlay(overlay)
-			.setLight(light)
-			.setNormal(pose, quad.nx(), quad.ny(), quad.nz());
+		consumer.vertex(pose.pose(), v.x(), v.y(), v.z())
+			.color(255, 255, 255, 255)
+			.uv(v.u(), v.v())
+			.overlayCoords(overlay)
+			.uv2(light)
+			.normal(pose.normal(), quad.nx(), quad.ny(), quad.nz())
+			.endVertex();
 	}
 
 	private static List<Quad> build(AbstractTexture handle, ResourceLocation texture) {

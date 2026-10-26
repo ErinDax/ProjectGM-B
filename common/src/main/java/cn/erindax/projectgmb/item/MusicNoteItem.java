@@ -16,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -30,11 +31,11 @@ public class MusicNoteItem extends Item {
 	}
 
 	public static String trackOf(ItemStack stack) {
-		return stack.getOrDefault(ModComponents.MUSIC_TRACK, "");
+		return ModComponents.MUSIC_TRACK.getOrDefault(stack, "");
 	}
 
 	public static int rangeOf(ItemStack stack) {
-		return clampRange(stack.getOrDefault(ModComponents.MUSIC_RANGE, DEFAULT_RANGE));
+		return clampRange(ModComponents.MUSIC_RANGE.getOrDefault(stack, DEFAULT_RANGE));
 	}
 
 	public static int clampRange(int range) {
@@ -71,7 +72,7 @@ public class MusicNoteItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
 		String track = trackOf(stack);
 		if (track.isEmpty()) {
 			tooltip.add(Component.translatable("item.projectgm_b.music_note.no_track").withStyle(ChatFormatting.GRAY));

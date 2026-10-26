@@ -29,7 +29,7 @@ public final class RemoteTextures {
 
 	public static ResourceLocation skin(String name) {
 		ResourceLocation id = get(TextureStore.SKINS.kind(), name);
-		return id != null ? id : DefaultPlayerSkin.getDefaultTexture();
+		return id != null ? id : DefaultPlayerSkin.getDefaultSkin();
 	}
 
 	@Nullable

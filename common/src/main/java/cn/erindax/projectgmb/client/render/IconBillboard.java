@@ -26,11 +26,12 @@ public final class IconBillboard {
 	}
 
 	private static void vertex(VertexConsumer consumer, PoseStack.Pose pose, float x, float y, float u, float v) {
-		consumer.addVertex(pose, x, y, 0.0F)
-			.setColor(255, 255, 255, 255)
-			.setUv(u, v)
-			.setOverlay(OverlayTexture.NO_OVERLAY)
-			.setLight(LightTexture.FULL_BRIGHT)
-			.setNormal(pose, 0.0F, 0.0F, 1.0F);
+		consumer.vertex(pose.pose(), x, y, 0.0F)
+			.color(255, 255, 255, 255)
+			.uv(u, v)
+			.overlayCoords(OverlayTexture.NO_OVERLAY)
+			.uv2(LightTexture.FULL_BRIGHT)
+			.normal(pose.normal(), 0.0F, 0.0F, 1.0F)
+			.endVertex();
 	}
 }

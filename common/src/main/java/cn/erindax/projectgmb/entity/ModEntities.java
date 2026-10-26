@@ -12,7 +12,6 @@ public final class ModEntities {
 		ProjectGmB.id("patroller"),
 		EntityType.Builder.of(PatrollerEntity::new, MobCategory.MISC)
 			.sized(0.6F, 1.8F)
-			.eyeHeight(1.62F)
 			.clientTrackingRange(10)
 			.build("patroller"));
 

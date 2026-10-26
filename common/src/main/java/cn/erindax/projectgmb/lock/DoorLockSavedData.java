@@ -3,13 +3,11 @@ package cn.erindax.projectgmb.lock;
 import cn.erindax.projectgmb.network.Network;
 import cn.erindax.projectgmb.network.SyncDoorLocksPayload;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.saveddata.SavedData;
 
 import java.util.HashMap;
@@ -21,12 +19,13 @@ public class DoorLockSavedData extends SavedData {
 
 	public static DoorLockSavedData get(ServerLevel level) {
 		return level.getDataStorage().computeIfAbsent(
-			new SavedData.Factory<>(DoorLockSavedData::new, DoorLockSavedData::load, DataFixTypes.LEVEL),
+			DoorLockSavedData::load,
+			DoorLockSavedData::new,
 			"projectgm_b_door_locks"
 		);
 	}
 
-	public static DoorLockSavedData load(CompoundTag tag, HolderLookup.Provider registries) {
+	public static DoorLockSavedData load(CompoundTag tag) {
 		DoorLockSavedData data = new DoorLockSavedData();
 		ListTag list = tag.getList("Locks", Tag.TAG_COMPOUND);
 		for (int i = 0; i < list.size(); i++) {
@@ -39,7 +38,7 @@ public class DoorLockSavedData extends SavedData {
 	}
 
 	@Override
-	public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
+	public CompoundTag save(CompoundTag tag) {
 		ListTag list = new ListTag();
 		locks.forEach((pos, record) -> {
 			CompoundTag entry = new CompoundTag();

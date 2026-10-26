@@ -2,11 +2,10 @@ package cn.erindax.projectgmb.music.net;
 
 import cn.erindax.projectgmb.ProjectGmB;
 import cn.erindax.projectgmb.music.MusicBlock;
+import cn.erindax.projectgmb.network.codec.CustomPacketPayload;
+import cn.erindax.projectgmb.network.codec.StreamCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 import java.util.List;
 
@@ -28,14 +27,14 @@ public record MusicBlockSyncPayload(List<Entry> entries) implements CustomPacket
 	public static final CustomPacketPayload.Type<MusicBlockSyncPayload> TYPE =
 		new CustomPacketPayload.Type<>(ProjectGmB.id("music_block_sync"));
 
-	public static final StreamCodec<RegistryFriendlyByteBuf, MusicBlockSyncPayload> STREAM_CODEC =
+	public static final StreamCodec<FriendlyByteBuf, MusicBlockSyncPayload> STREAM_CODEC =
 		CustomPacketPayload.codec(MusicBlockSyncPayload::write, MusicBlockSyncPayload::new);
 
-	private MusicBlockSyncPayload(RegistryFriendlyByteBuf buf) {
+	private MusicBlockSyncPayload(FriendlyByteBuf buf) {
 		this(buf.readList(Entry::read));
 	}
 
-	private void write(RegistryFriendlyByteBuf buf) {
+	private void write(FriendlyByteBuf buf) {
 		buf.writeCollection(entries, (b, e) -> e.write(b));
 	}
 

@@ -2,11 +2,10 @@ package cn.erindax.projectgmb.lock.net;
 
 import cn.erindax.projectgmb.ProjectGmB;
 import cn.erindax.projectgmb.lock.LockType;
+import cn.erindax.projectgmb.network.codec.CustomPacketPayload;
+import cn.erindax.projectgmb.network.codec.StreamCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 import java.util.List;
 
@@ -27,14 +26,14 @@ public record LockSyncPayload(List<Entry> entries) implements CustomPacketPayloa
 	public static final CustomPacketPayload.Type<LockSyncPayload> TYPE =
 		new CustomPacketPayload.Type<>(ProjectGmB.id("lock_sync"));
 
-	public static final StreamCodec<RegistryFriendlyByteBuf, LockSyncPayload> STREAM_CODEC =
+	public static final StreamCodec<FriendlyByteBuf, LockSyncPayload> STREAM_CODEC =
 		CustomPacketPayload.codec(LockSyncPayload::write, LockSyncPayload::new);
 
-	private LockSyncPayload(RegistryFriendlyByteBuf buf) {
+	private LockSyncPayload(FriendlyByteBuf buf) {
 		this(buf.readList(Entry::read));
 	}
 
-	private void write(RegistryFriendlyByteBuf buf) {
+	private void write(FriendlyByteBuf buf) {
 		buf.writeCollection(entries, (b, e) -> e.write(b));
 	}
 

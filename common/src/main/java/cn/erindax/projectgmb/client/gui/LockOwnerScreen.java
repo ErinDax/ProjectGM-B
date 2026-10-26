@@ -58,6 +58,7 @@ public class LockOwnerScreen extends Screen {
 
 	@Override
 	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+		renderBackground(graphics);
 		super.render(graphics, mouseX, mouseY, partialTick);
 		int top = height / 2 - FIELD_HEIGHT - GAP;
 		graphics.drawCenteredString(font, title, width / 2, top - 28, 0xFFFFFF);

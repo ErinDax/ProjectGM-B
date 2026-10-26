@@ -229,7 +229,7 @@ public final class LockHandler {
 			Locks.markDirty(level);
 			player.displayClientMessage(Component.translatable("lock.projectgm_b.unlocked_permanent"), true);
 		}
-		state.useWithoutItem(level, player, new BlockHitResult(pos.getCenter(), Direction.UP, pos, false));
+		state.use(level, player, InteractionHand.MAIN_HAND, new BlockHitResult(pos.getCenter(), Direction.UP, pos, false));
 	}
 
 	static void finishKeySetup(ServerPlayer player, BlockPos pos, ItemStack keyStack) {
@@ -289,14 +289,14 @@ public final class LockHandler {
 		}
 		String skin = payload.skin();
 		if (skin.isEmpty()) {
-			held.remove(ModComponents.KEY_SKIN);
+			ModComponents.KEY_SKIN.remove(held);
 			return;
 		}
 		if (TextureStore.KEYS.load(skin, true) == null) {
 			player.displayClientMessage(Component.translatable("lock.projectgm_b.key_skin_missing", skin), true);
 			return;
 		}
-		held.set(ModComponents.KEY_SKIN, skin);
+		ModComponents.KEY_SKIN.set(held, skin);
 		TextureStore.KEYS.sendToAll(player.server.getPlayerList().getPlayers(), skin);
 	}
 

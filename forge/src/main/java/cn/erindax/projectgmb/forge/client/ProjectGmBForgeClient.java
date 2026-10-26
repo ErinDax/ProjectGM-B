@@ -1,6 +1,5 @@
-package cn.erindax.projectgmb.neoforge.client;
+package cn.erindax.projectgmb.forge.client;
 
-import cn.erindax.projectgmb.ProjectGmB;
 import cn.erindax.projectgmb.block.ModBlocks;
 import cn.erindax.projectgmb.client.ClientEvents;
 import cn.erindax.projectgmb.client.ProjectGmBClient;
@@ -8,33 +7,29 @@ import cn.erindax.projectgmb.client.dance.DanceSound;
 import cn.erindax.projectgmb.client.render.PatrollerModelLayers;
 import cn.erindax.projectgmb.client.render.PatrollerRenderer;
 import cn.erindax.projectgmb.entity.ModEntities;
-import cn.erindax.projectgmb.item.ModItems;
 import cn.erindax.projectgmb.platform.Event;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.ModelEvent;
-import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
-import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
-import net.neoforged.neoforge.client.event.RenderGuiEvent;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
-import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
-import net.neoforged.neoforge.common.NeoForge;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.event.RenderGuiEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 
-@Mod(value = ProjectGmB.MOD_ID, dist = Dist.CLIENT)
-public final class ProjectGmBNeoForgeClient {
-	public ProjectGmBNeoForgeClient(IEventBus modBus) {
+public final class ProjectGmBForgeClient {
+	private ProjectGmBForgeClient() {
+	}
+
+	public static void init(IEventBus modBus) {
 		ProjectGmBClient.init();
 		DanceSound.setFactory(DanceSoundInstance::new);
 		modBus.addListener((RegisterKeyMappingsEvent event) ->
 			ClientEvents.keyMappings().forEach(factory -> event.register(factory.get())));
-		modBus.addListener((RegisterClientExtensionsEvent event) ->
-			event.registerItem(new KeyItemExtensions(), ModItems.KEY));
 		modBus.addListener((ModelEvent.ModifyBakingResult event) -> DanceBlockModel.wrap(event.getModels()));
 		modBus.addListener((RegisterColorHandlersEvent.Block event) ->
 			event.register(DanceBlockModel::tint, ModBlocks.DANCE_BLOCK));
@@ -42,12 +37,16 @@ public final class ProjectGmBNeoForgeClient {
 			PatrollerModelLayers.register(event::registerLayerDefinition));
 		modBus.addListener((EntityRenderersEvent.RegisterRenderers event) ->
 			event.registerEntityRenderer(ModEntities.PATROLLER, PatrollerRenderer::new));
-		NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post event) -> Event.post(ClientEvents.TICK, Minecraft.getInstance()));
-		NeoForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingOut event) ->
+		MinecraftForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent event) -> {
+			if (event.phase == TickEvent.Phase.END) {
+				Event.post(ClientEvents.TICK, Minecraft.getInstance());
+			}
+		});
+		MinecraftForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingOut event) ->
 			Event.post(ClientEvents.DISCONNECT, Minecraft.getInstance()));
-		NeoForge.EVENT_BUS.addListener((RenderGuiEvent.Post event) ->
+		MinecraftForge.EVENT_BUS.addListener((RenderGuiEvent.Post event) ->
 			ClientEvents.renderHud(event.getGuiGraphics(), event.getPartialTick()));
-		NeoForge.EVENT_BUS.addListener(ProjectGmBNeoForgeClient::renderLevel);
+		MinecraftForge.EVENT_BUS.addListener(ProjectGmBForgeClient::renderLevel);
 	}
 
 	private static void renderLevel(RenderLevelStageEvent event) {

@@ -3,7 +3,6 @@ package cn.erindax.projectgmb.client;
 import cn.erindax.projectgmb.platform.Event;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Camera;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -35,9 +34,9 @@ public final class ClientEvents {
 		return Collections.unmodifiableList(KEY_MAPPINGS);
 	}
 
-	public static void renderHud(GuiGraphics graphics, DeltaTracker tracker) {
+	public static void renderHud(GuiGraphics graphics, float partialTick) {
 		for (HudRender listener : HUD.listeners()) {
-			listener.render(graphics, tracker);
+			listener.render(graphics, partialTick);
 		}
 	}
 
@@ -50,7 +49,7 @@ public final class ClientEvents {
 
 	@FunctionalInterface
 	public interface HudRender {
-		void render(GuiGraphics graphics, DeltaTracker tracker);
+		void render(GuiGraphics graphics, float partialTick);
 	}
 
 	@FunctionalInterface

@@ -5,7 +5,6 @@ import cn.erindax.projectgmb.network.SyncDoorLocksPayload;
 import cn.erindax.projectgmb.platform.ModEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -110,8 +109,7 @@ public final class DoorLocks {
 	}
 
 	private static String stackName(ItemStack stack) {
-		Component name = stack.get(DataComponents.CUSTOM_NAME);
-		return name == null ? "" : name.getString();
+		return stack.hasCustomHoverName() ? stack.getHoverName().getString() : "";
 	}
 
 	private static boolean nameMatches(ItemStack stack, String expected) {

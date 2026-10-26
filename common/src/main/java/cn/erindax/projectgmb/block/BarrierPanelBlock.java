@@ -2,7 +2,6 @@ package cn.erindax.projectgmb.block;
 
 import cn.erindax.projectgmb.compat.visiblebarriers.VisibleBarriersCompat;
 import com.google.common.collect.ImmutableMap;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -22,8 +21,6 @@ import java.util.EnumMap;
 import java.util.Map;
 
 public class BarrierPanelBlock extends MultifaceBlock {
-
-	public static final MapCodec<BarrierPanelBlock> CODEC = simpleCodec(BarrierPanelBlock::new);
 
 	private static final double THICKNESS = 0.1;
 	private static final Map<Direction, VoxelShape> FACE_SHAPES = new EnumMap<>(Map.of(
@@ -51,27 +48,23 @@ public class BarrierPanelBlock extends MultifaceBlock {
 	}
 
 	@Override
-	protected MapCodec<? extends MultifaceBlock> codec() {
-		return CODEC;
-	}
-
-	@Override
-	protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+	public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
 		return shapes.get(state);
 	}
 
 	@Override
-	protected RenderShape getRenderShape(BlockState state) {
+	@SuppressWarnings("deprecation")
+	public RenderShape getRenderShape(BlockState state) {
 		return VisibleBarriersCompat.isBarrierVisible() ? RenderShape.MODEL : RenderShape.INVISIBLE;
 	}
 
 	@Override
-	protected boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+	public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
 		return true;
 	}
 
 	@Override
-	protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState,
+	public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState,
 			LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
 		return state;
 	}
@@ -82,7 +75,7 @@ public class BarrierPanelBlock extends MultifaceBlock {
 	}
 
 	@Override
-	protected boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
+	public boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
 		return context.getItemInHand().is(asItem())
 			&& Arrays.stream(DIRECTIONS).anyMatch(direction -> !hasFace(state, direction))
 			&& !context.isSecondaryUseActive();

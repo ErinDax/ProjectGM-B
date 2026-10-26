@@ -1,7 +1,7 @@
 package cn.erindax.projectgmb;
 
+import cn.erindax.projectgmb.network.codec.CustomPacketPayload;
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 
 public final class PlatformNetwork {

@@ -1,15 +1,15 @@
 package cn.erindax.projectgmb.network;
 
 import cn.erindax.projectgmb.ProjectGmB;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import cn.erindax.projectgmb.network.codec.ByteBufCodecs;
+import cn.erindax.projectgmb.network.codec.CustomPacketPayload;
+import cn.erindax.projectgmb.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
 
 public record HostBroadcastPayload(boolean active) implements CustomPacketPayload {
 	public static final CustomPacketPayload.Type<HostBroadcastPayload> TYPE =
 		new CustomPacketPayload.Type<>(ProjectGmB.id("host_broadcast"));
-	public static final StreamCodec<RegistryFriendlyByteBuf, HostBroadcastPayload> CODEC =
+	public static final StreamCodec<FriendlyByteBuf, HostBroadcastPayload> CODEC =
 		StreamCodec.composite(ByteBufCodecs.BOOL, HostBroadcastPayload::active, HostBroadcastPayload::new);
 
 	@Override

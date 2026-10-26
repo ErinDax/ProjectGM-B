@@ -8,7 +8,6 @@ import cn.erindax.projectgmb.music.MusicBlock;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Camera;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -57,7 +56,7 @@ public final class MusicBlockRenderer {
 		}
 	}
 
-	private static void renderHint(GuiGraphics graphics, DeltaTracker tracker) {
+	private static void renderHint(GuiGraphics graphics, float partialTick) {
 		Minecraft minecraft = Minecraft.getInstance();
 		LocalPlayer player = minecraft.player;
 		if (player == null || minecraft.screen != null || minecraft.options.hideGui

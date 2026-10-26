@@ -30,13 +30,14 @@ public final class DanceBlockModel extends ForwardingBakedModel {
 	private static final String INVENTORY = "inventory";
 
 	private DanceBlockModel(BakedModel wrapped) {
-		super(wrapped);
+		this.wrapped = wrapped;
 	}
 
 	public static void register() {
 		ModelLoadingPlugin.register(context -> context.modifyModelAfterBake().register((model, modelContext) -> {
-			ModelResourceLocation id = modelContext.topLevelId();
-			if (model != null && id != null && BLOCK_ID.equals(id.id()) && !INVENTORY.equals(id.variant())) {
+			if (model != null && modelContext.id() instanceof ModelResourceLocation id
+					&& BLOCK_ID.getNamespace().equals(id.getNamespace()) && BLOCK_ID.getPath().equals(id.getPath())
+					&& !INVENTORY.equals(id.getVariant())) {
 				return new DanceBlockModel(model);
 			}
 			return model;

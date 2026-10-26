@@ -5,6 +5,7 @@ import cn.erindax.projectgmb.entity.ModEntities;
 import cn.erindax.projectgmb.entity.PatrollerEntity;
 import cn.erindax.projectgmb.item.ModItems;
 import cn.erindax.projectgmb.network.Network;
+import cn.erindax.projectgmb.network.codec.CustomPacketPayload;
 import cn.erindax.projectgmb.platform.Event;
 import cn.erindax.projectgmb.platform.ModEvents;
 import net.fabricmc.api.ModInitializer;
@@ -17,11 +18,9 @@ import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.item.CreativeModeTabs;
 
 public final class ProjectGmBFabric implements ModInitializer {
@@ -30,7 +29,6 @@ public final class ProjectGmBFabric implements ModInitializer {
 		ProjectGmB.registerContent();
 		FabricDefaultAttributeRegistry.register(ModEntities.PATROLLER, PatrollerEntity.createAttributes());
 		ProjectGmB.init();
-		Network.clientbound().forEach(ProjectGmBFabric::registerClientbound);
 		Network.serverbound().forEach(ProjectGmBFabric::registerServerbound);
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.OP_BLOCKS).register(entries -> entries.accept(ModItems.BARRIER_PANEL));
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
@@ -59,13 +57,10 @@ public final class ProjectGmBFabric implements ModInitializer {
 		PlayerBlockBreakEvents.AFTER.register(ModEvents::afterBreak);
 	}
 
-	private static <T extends CustomPacketPayload> void registerClientbound(Network.Clientbound<T> entry) {
-		PayloadTypeRegistry.playS2C().register(entry.type(), entry.codec());
-	}
-
 	private static <T extends CustomPacketPayload> void registerServerbound(Network.Serverbound<T> entry) {
-		PayloadTypeRegistry.playC2S().register(entry.type(), entry.codec());
-		ServerPlayNetworking.registerGlobalReceiver(entry.type(), (payload, context) ->
-			entry.handler().accept(payload, context.player()));
+		ServerPlayNetworking.registerGlobalReceiver(entry.type().id(), (server, player, handler, buf, responseSender) -> {
+			T payload = entry.codec().decode(buf);
+			server.execute(() -> entry.handler().accept(payload, player));
+		});
 	}
 }

@@ -1,38 +1,52 @@
 package cn.erindax.projectgmb.item;
 
 import cn.erindax.projectgmb.ProjectGmB;
-import com.mojang.serialization.Codec;
-import net.minecraft.core.Registry;
-import net.minecraft.core.component.DataComponentType;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
+
+import java.util.function.BiFunction;
 
 public final class ModComponents {
-
-	public static final DataComponentType<String> KEY_SKIN = Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE,
-		ProjectGmB.id("key_skin"),
-		DataComponentType.<String>builder()
-			.persistent(Codec.STRING)
-			.networkSynchronized(ByteBufCodecs.STRING_UTF8)
-			.build());
-
-	public static final DataComponentType<String> MUSIC_TRACK = Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE,
-		ProjectGmB.id("music_track"),
-		DataComponentType.<String>builder()
-			.persistent(Codec.STRING)
-			.networkSynchronized(ByteBufCodecs.STRING_UTF8)
-			.build());
-
-	public static final DataComponentType<Integer> MUSIC_RANGE = Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE,
-		ProjectGmB.id("music_range"),
-		DataComponentType.<Integer>builder()
-			.persistent(Codec.INT)
-			.networkSynchronized(ByteBufCodecs.VAR_INT)
-			.build());
+	public static final Key<String> KEY_SKIN = new Key<>("key_skin", Tag.TAG_STRING, CompoundTag::getString,
+		CompoundTag::putString);
+	public static final Key<String> MUSIC_TRACK = new Key<>("music_track", Tag.TAG_STRING, CompoundTag::getString,
+		CompoundTag::putString);
+	public static final Key<Integer> MUSIC_RANGE = new Key<>("music_range", Tag.TAG_INT, CompoundTag::getInt,
+		CompoundTag::putInt);
 
 	private ModComponents() {
 	}
 
-	public static void init() {
+	public static final class Key<T> {
+		private final String name;
+		private final int type;
+		private final BiFunction<CompoundTag, String, T> reader;
+		private final Writer<T> writer;
+
+		private Key(String path, int type, BiFunction<CompoundTag, String, T> reader, Writer<T> writer) {
+			this.name = ProjectGmB.id(path).toString();
+			this.type = type;
+			this.reader = reader;
+			this.writer = writer;
+		}
+
+		public T getOrDefault(ItemStack stack, T fallback) {
+			CompoundTag tag = stack.getTag();
+			return tag != null && tag.contains(name, type) ? reader.apply(tag, name) : fallback;
+		}
+
+		public void set(ItemStack stack, T value) {
+			writer.write(stack.getOrCreateTag(), name, value);
+		}
+
+		public void remove(ItemStack stack) {
+			stack.removeTagKey(name);
+		}
+	}
+
+	@FunctionalInterface
+	private interface Writer<T> {
+		void write(CompoundTag tag, String name, T value);
 	}
 }

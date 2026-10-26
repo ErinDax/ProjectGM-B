@@ -59,6 +59,7 @@ public class KeySkinScreen extends Screen {
 
 	@Override
 	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+		renderBackground(graphics);
 		super.render(graphics, mouseX, mouseY, partialTick);
 		graphics.drawCenteredString(font, title, width / 2, 14, 0xFFFFFF);
 		for (int i = 0; i < skins.size(); i++) {

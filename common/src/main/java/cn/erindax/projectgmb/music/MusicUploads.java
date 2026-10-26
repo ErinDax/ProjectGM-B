@@ -125,7 +125,7 @@ public final class MusicUploads {
 		if (outcome.saved()) {
 			ItemStack held = player.getItemInHand(hand);
 			if (held.is(ModItems.MUSIC_NOTE)) {
-				held.set(ModComponents.MUSIC_TRACK, name);
+				ModComponents.MUSIC_TRACK.set(held, name);
 			}
 		}
 		finish(player, hand, outcome.message());

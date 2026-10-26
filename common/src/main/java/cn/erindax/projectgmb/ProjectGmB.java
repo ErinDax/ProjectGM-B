@@ -1,12 +1,12 @@
 package cn.erindax.projectgmb;
 
+import cn.erindax.projectgmb.block.ModBlockEntities;
 import cn.erindax.projectgmb.block.ModBlocks;
 import cn.erindax.projectgmb.command.ModCommands;
 import cn.erindax.projectgmb.dance.DanceManager;
 import cn.erindax.projectgmb.entity.ModEntities;
 import cn.erindax.projectgmb.entity.PatrolRecorder;
 import cn.erindax.projectgmb.entity.net.PatrollerSettingsHandler;
-import cn.erindax.projectgmb.item.ModComponents;
 import cn.erindax.projectgmb.item.ModItems;
 import cn.erindax.projectgmb.lock.DoorLocks;
 import cn.erindax.projectgmb.lock.LockHandler;
@@ -37,8 +37,8 @@ public final class ProjectGmB {
 
 	public static void registerContent() {
 		ModGameRules.init();
-		ModComponents.init();
 		ModBlocks.init();
+		ModBlockEntities.init();
 		ModItems.init();
 		ModEntities.init();
 	}
@@ -91,6 +91,6 @@ public final class ProjectGmB {
 	}
 
 	public static ResourceLocation id(String path) {
-		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+		return new ResourceLocation(MOD_ID, path);
 	}
 }

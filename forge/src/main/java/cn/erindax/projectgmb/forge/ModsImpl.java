@@ -1,6 +1,6 @@
-package cn.erindax.projectgmb.neoforge;
+package cn.erindax.projectgmb.forge;
 
-import net.neoforged.fml.loading.LoadingModList;
+import net.minecraftforge.fml.loading.LoadingModList;
 
 public final class ModsImpl {
 	private ModsImpl() {

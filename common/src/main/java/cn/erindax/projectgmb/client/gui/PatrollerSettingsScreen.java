@@ -221,9 +221,7 @@ public class PatrollerSettingsScreen extends Screen {
 		return box;
 	}
 
-	@Override
-	public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-		super.renderBackground(graphics, mouseX, mouseY, partialTick);
+	private void renderPanel(GuiGraphics graphics) {
 		graphics.fill(left, top, left + panelWidth, top + panelHeight, PANEL_FILL);
 		graphics.renderOutline(left, top, panelWidth, panelHeight, PANEL_BORDER);
 		graphics.fill(previewX0, previewY0, previewX1, previewY1, PREVIEW_FILL);
@@ -234,6 +232,8 @@ public class PatrollerSettingsScreen extends Screen {
 	@Override
 	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
 		refreshConfirmLabels();
+		renderBackground(graphics);
+		renderPanel(graphics);
 		super.render(graphics, mouseX, mouseY, partialTick);
 		String shownName = nameBox.getValue().isBlank() ? data.name() : nameBox.getValue().strip();
 		graphics.drawString(font, Component.literal(shownName), left + PAD, top + 8, TITLE_COLOR);
@@ -266,7 +266,7 @@ public class PatrollerSettingsScreen extends Screen {
 		pose.mulPose(Axis.YP.rotationDegrees(yaw));
 		Lighting.setupForEntityInInventory();
 		VertexConsumer consumer = graphics.bufferSource().getBuffer(model.renderType(texture));
-		model.renderToBuffer(pose, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+		model.renderToBuffer(pose, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 		graphics.flush();
 		Lighting.setupFor3DItems();
 		pose.popPose();

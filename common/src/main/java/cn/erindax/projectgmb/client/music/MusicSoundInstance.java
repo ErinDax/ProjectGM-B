@@ -61,7 +61,7 @@ public class MusicSoundInstance extends AbstractTickableSoundInstance {
 
 	@Override
 	public WeighedSoundEvents resolve(SoundManager manager) {
-		this.sound = new Sound(this.location, ConstantFloat.of(1.0F), ConstantFloat.of(1.0F), 1, Sound.Type.FILE,
+		this.sound = new Sound(this.location.toString(), ConstantFloat.of(1.0F), ConstantFloat.of(1.0F), 1, Sound.Type.FILE,
 			true, false, range);
 		return new WeighedSoundEvents(this.location, null);
 	}

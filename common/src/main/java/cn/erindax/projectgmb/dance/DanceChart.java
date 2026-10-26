@@ -1,8 +1,8 @@
 package cn.erindax.projectgmb.dance;
 
+import cn.erindax.projectgmb.network.codec.ByteBufCodecs;
+import cn.erindax.projectgmb.network.codec.StreamCodec;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 
 import java.util.List;
 

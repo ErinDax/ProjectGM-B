@@ -1,9 +1,10 @@
 package cn.erindax.projectgmb.network;
 
 import cn.erindax.projectgmb.PlatformNetwork;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import cn.erindax.projectgmb.network.codec.CustomPacketPayload;
+import cn.erindax.projectgmb.network.codec.StreamCodec;
+import io.netty.buffer.Unpooled;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Collections;
@@ -18,18 +19,34 @@ public final class Network {
 	private static final List<Serverbound<?>> SERVERBOUND = new CopyOnWriteArrayList<>();
 	private static final List<Clientbound<?>> CLIENTBOUND = new CopyOnWriteArrayList<>();
 	private static final Map<CustomPacketPayload.Type<?>, Consumer<?>> CLIENT_HANDLERS = new ConcurrentHashMap<>();
+	private static final Map<CustomPacketPayload.Type<?>, StreamCodec<? super FriendlyByteBuf, ?>> CODECS =
+		new ConcurrentHashMap<>();
 
 	private Network() {
 	}
 
 	public static <T extends CustomPacketPayload> void serverbound(CustomPacketPayload.Type<T> type,
-			StreamCodec<? super RegistryFriendlyByteBuf, T> codec, BiConsumer<T, ServerPlayer> handler) {
+			StreamCodec<? super FriendlyByteBuf, T> codec, BiConsumer<T, ServerPlayer> handler) {
 		SERVERBOUND.add(new Serverbound<>(type, codec, handler));
+		CODECS.put(type, codec);
 	}
 
 	public static <T extends CustomPacketPayload> void clientbound(CustomPacketPayload.Type<T> type,
-			StreamCodec<? super RegistryFriendlyByteBuf, T> codec) {
+			StreamCodec<? super FriendlyByteBuf, T> codec) {
 		CLIENTBOUND.add(new Clientbound<>(type, codec));
+		CODECS.put(type, codec);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static FriendlyByteBuf encode(CustomPacketPayload payload) {
+		StreamCodec<? super FriendlyByteBuf, CustomPacketPayload> codec =
+			(StreamCodec<? super FriendlyByteBuf, CustomPacketPayload>) CODECS.get(payload.type());
+		if (codec == null) {
+			throw new IllegalArgumentException("Unregistered payload " + payload.type().id());
+		}
+		FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+		codec.encode(buffer, payload);
+		return buffer;
 	}
 
 	public static <T extends CustomPacketPayload> void onClient(CustomPacketPayload.Type<T> type, Consumer<T> handler) {
@@ -65,10 +82,10 @@ public final class Network {
 	}
 
 	public record Serverbound<T extends CustomPacketPayload>(CustomPacketPayload.Type<T> type,
-			StreamCodec<? super RegistryFriendlyByteBuf, T> codec, BiConsumer<T, ServerPlayer> handler) {
+			StreamCodec<? super FriendlyByteBuf, T> codec, BiConsumer<T, ServerPlayer> handler) {
 	}
 
 	public record Clientbound<T extends CustomPacketPayload>(CustomPacketPayload.Type<T> type,
-			StreamCodec<? super RegistryFriendlyByteBuf, T> codec) {
+			StreamCodec<? super FriendlyByteBuf, T> codec) {
 	}
 }

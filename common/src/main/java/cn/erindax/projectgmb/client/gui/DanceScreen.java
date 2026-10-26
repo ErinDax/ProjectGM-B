@@ -103,10 +103,6 @@ public class DanceScreen extends Screen {
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-	}
-
-	@Override
 	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
 		game.update();
 		layout();

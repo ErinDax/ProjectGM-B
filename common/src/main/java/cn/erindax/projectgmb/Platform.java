@@ -3,6 +3,7 @@ package cn.erindax.projectgmb;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -40,6 +41,11 @@ public final class Platform {
 	@ExpectPlatform
 	public static <T extends BlockEntity> BlockEntityType<T> blockEntityType(BiFunction<BlockPos, BlockState, T> factory,
 			Block... blocks) {
+		throw new AssertionError();
+	}
+
+	@ExpectPlatform
+	public static Item keyItem(Item.Properties properties) {
 		throw new AssertionError();
 	}
 }

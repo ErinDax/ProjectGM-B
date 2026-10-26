@@ -16,7 +16,7 @@ public class KeyItem extends Item {
 	}
 
 	public static String skinOf(ItemStack stack) {
-		return stack.getOrDefault(ModComponents.KEY_SKIN, "");
+		return ModComponents.KEY_SKIN.getOrDefault(stack, "");
 	}
 
 	@Override

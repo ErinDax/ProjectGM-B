@@ -2,7 +2,7 @@
   "required": false,
   "minVersion": "0.8",
   "package": "cn.erindax.projectgmb.client.mixin",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_17",
   "plugin": "cn.erindax.projectgmb.client.mixin.ScholarCompatMixinPlugin",
   "client": [
     "ScholarLecternTakeBookMixin"

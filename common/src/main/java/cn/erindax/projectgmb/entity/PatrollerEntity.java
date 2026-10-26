@@ -22,10 +22,12 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -56,6 +58,7 @@ public class PatrollerEntity extends PathfinderMob {
 	private static final double MIN_FOLLOW_RANGE = 48.0;
 	private static final double VIEW_CONE_COS = Math.cos(Math.toRadians(60.0));
 	private static final double PLAYER_KNOCKBACK = 0.4;
+	private static final float EYE_HEIGHT = 1.62F;
 	private static final ResourceKey<DamageType> ATTACK_DAMAGE_TYPE =
 		ResourceKey.create(Registries.DAMAGE_TYPE, ProjectGmB.id("patroller_attack"));
 
@@ -112,13 +115,18 @@ public class PatrollerEntity extends PathfinderMob {
 	}
 
 	@Override
-	protected void defineSynchedData(SynchedEntityData.Builder builder) {
-		super.defineSynchedData(builder);
-		builder.define(SKIN, "");
-		builder.define(SLIM, false);
-		builder.define(PATROL_NAME, "");
-		builder.define(NAME_VISIBLE, false);
-		builder.define(SHOW_HELD_ITEMS, true);
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		entityData.define(SKIN, "");
+		entityData.define(SLIM, false);
+		entityData.define(PATROL_NAME, "");
+		entityData.define(NAME_VISIBLE, false);
+		entityData.define(SHOW_HELD_ITEMS, true);
+	}
+
+	@Override
+	protected float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
+		return EYE_HEIGHT;
 	}
 
 	@Override
@@ -378,8 +386,8 @@ public class PatrollerEntity extends PathfinderMob {
 		DamageSource source = new DamageSource(level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE)
 			.getHolderOrThrow(ATTACK_DAMAGE_TYPE), this);
 		float damage = (float) getAttributeValue(Attributes.ATTACK_DAMAGE);
-		if (level() instanceof ServerLevel serverLevel) {
-			damage = EnchantmentHelper.modifyDamage(serverLevel, getWeaponItem(), target, source, damage);
+		if (target instanceof LivingEntity living) {
+			damage += EnchantmentHelper.getDamageBonus(getMainHandItem(), living.getMobType());
 		}
 		if (!target.hurt(source, damage)) {
 			return false;
@@ -388,11 +396,8 @@ public class PatrollerEntity extends PathfinderMob {
 			living.knockback(PLAYER_KNOCKBACK,
 				Mth.sin(getYRot() * Mth.DEG_TO_RAD), -Mth.cos(getYRot() * Mth.DEG_TO_RAD));
 		}
-		if (level() instanceof ServerLevel serverLevel) {
-			EnchantmentHelper.doPostAttackEffects(serverLevel, target, source);
-		}
+		doEnchantDamageEffects(this, target);
 		setLastHurtMob(target);
-		playAttackSound();
 		return true;
 	}
 

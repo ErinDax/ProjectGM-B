@@ -1,11 +1,13 @@
 package cn.erindax.projectgmb.fabric;
 
+import cn.erindax.projectgmb.item.KeyItem;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -39,5 +41,9 @@ public final class PlatformImpl {
 	public static <T extends BlockEntity> BlockEntityType<T> blockEntityType(BiFunction<BlockPos, BlockState, T> factory,
 			Block... blocks) {
 		return BlockEntityType.Builder.of(factory::apply, blocks).build(null);
+	}
+
+	public static Item keyItem(Item.Properties properties) {
+		return new KeyItem(properties);
 	}
 }

@@ -1,11 +1,9 @@
 package cn.erindax.projectgmb.dance;
 
-import net.minecraft.core.UUIDUtil;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import cn.erindax.projectgmb.network.codec.ByteBufCodecs;
+import cn.erindax.projectgmb.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentSerialization;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 
 import java.util.Comparator;
 import java.util.List;
@@ -18,14 +16,14 @@ public record DanceStanding(UUID id, Component name, DanceStats stats, int statu
 	public static final int QUIT = 2;
 	public static final int OFFLINE = 3;
 
-	public static final StreamCodec<RegistryFriendlyByteBuf, DanceStanding> STREAM_CODEC = StreamCodec.composite(
-		UUIDUtil.STREAM_CODEC, DanceStanding::id,
-		ComponentSerialization.STREAM_CODEC, DanceStanding::name,
+	public static final StreamCodec<FriendlyByteBuf, DanceStanding> STREAM_CODEC = StreamCodec.composite(
+		ByteBufCodecs.UUID, DanceStanding::id,
+		ByteBufCodecs.COMPONENT, DanceStanding::name,
 		DanceStats.STREAM_CODEC, DanceStanding::stats,
 		ByteBufCodecs.VAR_INT, DanceStanding::status,
 		DanceStanding::new);
 
-	public static final StreamCodec<RegistryFriendlyByteBuf, List<DanceStanding>> LIST_CODEC =
+	public static final StreamCodec<FriendlyByteBuf, List<DanceStanding>> LIST_CODEC =
 		STREAM_CODEC.apply(ByteBufCodecs.list(256));
 
 	public static final Comparator<DanceStanding> ORDER = Comparator

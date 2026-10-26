@@ -1,6 +1,5 @@
 package cn.erindax.projectgmb.lock;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
@@ -75,7 +74,7 @@ public final class LockData {
 	}
 
 	public boolean matchesKey(ItemStack stack) {
-		return !key.isEmpty() && !stack.isEmpty() && ItemStack.isSameItemSameComponents(key, stack);
+		return !key.isEmpty() && !stack.isEmpty() && ItemStack.isSameItemSameTags(key, stack);
 	}
 
 	public boolean isOwner(UUID id) {
@@ -92,7 +91,7 @@ public final class LockData {
 		}
 	}
 
-	public CompoundTag save(HolderLookup.Provider registries) {
+	public CompoundTag save() {
 		CompoundTag tag = new CompoundTag();
 		tag.putByte(TAG_TYPE, (byte) type.ordinal());
 		tag.putUUID(TAG_OWNER, owner);
@@ -100,7 +99,7 @@ public final class LockData {
 		tag.putByte(TAG_MODE, (byte) mode.ordinal());
 		tag.putString(TAG_HASH, passwordHash);
 		if (!key.isEmpty()) {
-			tag.put(TAG_KEY, key.save(registries));
+			tag.put(TAG_KEY, key.save(new CompoundTag()));
 		}
 		ListTag list = new ListTag();
 		for (UUID id : unlocked) {
@@ -110,13 +109,13 @@ public final class LockData {
 		return tag;
 	}
 
-	public static LockData load(CompoundTag tag, HolderLookup.Provider registries) {
+	public static LockData load(CompoundTag tag) {
 		LockData data = new LockData(LockType.byIndex(tag.getByte(TAG_TYPE)), tag.getUUID(TAG_OWNER),
 			tag.getString(TAG_OWNER_NAME));
 		data.mode = LockMode.byIndex(tag.getByte(TAG_MODE));
 		data.passwordHash = tag.getString(TAG_HASH);
 		if (tag.contains(TAG_KEY)) {
-			data.key = ItemStack.parse(registries, tag.get(TAG_KEY)).orElse(ItemStack.EMPTY);
+			data.key = ItemStack.of(tag.getCompound(TAG_KEY));
 		}
 		ListTag list = tag.getList(TAG_UNLOCKED, Tag.TAG_INT_ARRAY);
 		for (Tag entry : list) {

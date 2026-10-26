@@ -1,6 +1,5 @@
 package cn.erindax.projectgmb.manage;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -30,16 +29,14 @@ public class WandRosterState extends SavedData {
 	private static final String TAG_GROUP = "Group";
 	private static final String TAG_HIDDEN = "Hidden";
 
-	private static final SavedData.Factory<WandRosterState> FACTORY =
-		new SavedData.Factory<>(WandRosterState::new, WandRosterState::load, null);
 
 	private final Map<UUID, Member> members = new HashMap<>();
 
 	public static WandRosterState get(MinecraftServer server) {
-		return server.overworld().getDataStorage().computeIfAbsent(FACTORY, DATA_NAME);
+		return server.overworld().getDataStorage().computeIfAbsent(WandRosterState::load, WandRosterState::new, DATA_NAME);
 	}
 
-	private static WandRosterState load(CompoundTag tag, HolderLookup.Provider registries) {
+	private static WandRosterState load(CompoundTag tag) {
 		WandRosterState state = new WandRosterState();
 		ListTag list = tag.getList(TAG_MEMBERS, Tag.TAG_COMPOUND);
 		for (int i = 0; i < list.size(); i++) {
@@ -57,7 +54,7 @@ public class WandRosterState extends SavedData {
 	}
 
 	@Override
-	public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
+	public CompoundTag save(CompoundTag tag) {
 		ListTag list = new ListTag();
 		for (Map.Entry<UUID, Member> entry : members.entrySet()) {
 			CompoundTag item = new CompoundTag();

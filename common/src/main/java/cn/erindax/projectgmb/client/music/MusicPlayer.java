@@ -5,11 +5,11 @@ import cn.erindax.projectgmb.client.mixin.SoundEngineAccessor;
 import cn.erindax.projectgmb.client.mixin.SoundManagerAccessor;
 import cn.erindax.projectgmb.music.net.MusicControlPayload;
 import com.mojang.blaze3d.audio.Channel;
+import com.mojang.blaze3d.audio.OggAudioStream;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.sounds.AudioStream;
 import net.minecraft.client.sounds.ChannelAccess;
-import net.minecraft.client.sounds.JOrbisAudioStream;
 import net.minecraft.client.sounds.SoundEngine;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.resources.ResourceLocation;
@@ -200,7 +200,7 @@ public final class MusicPlayer {
 		if (track.toLowerCase(Locale.ROOT).endsWith(".mp3")) {
 			return new Mp3AudioStream(new ByteArrayInputStream(data));
 		}
-		return new JOrbisAudioStream(new ByteArrayInputStream(data));
+		return new OggAudioStream(new ByteArrayInputStream(data));
 	}
 
 	private static void withChannel(UUID session, Consumer<Channel> action) {

@@ -51,7 +51,7 @@ public class MusicNoteScreen extends Screen {
 	protected void init() {
 		int listHeight = Math.max(ITEM_HEIGHT, height - LIST_BOTTOM_MARGIN - LIST_TOP);
 		list = new TrackList(minecraft, LIST_WIDTH, listHeight, LIST_TOP, ITEM_HEIGHT);
-		list.setX((width - LIST_WIDTH) / 2);
+		list.setLeftPos((width - LIST_WIDTH) / 2);
 		addRenderableWidget(list);
 
 		addRenderableWidget(new RangeSlider((width - 200) / 2, height - 64, 200, 20));
@@ -67,6 +67,7 @@ public class MusicNoteScreen extends Screen {
 
 	@Override
 	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+		renderBackground(graphics);
 		super.render(graphics, mouseX, mouseY, partialTick);
 		graphics.drawCenteredString(font, title, width / 2, 10, 0xFFFFFF);
 		Component current = selected.isEmpty()
@@ -75,7 +76,7 @@ public class MusicNoteScreen extends Screen {
 		graphics.drawCenteredString(font, current, width / 2, 20, 0xAAAAAA);
 		if (tracks.isEmpty()) {
 			Component hint = Component.translatable("screen.projectgm_b.music.empty");
-			graphics.drawWordWrap(font, hint, list.getX() + 10, LIST_TOP + 20, LIST_WIDTH - 20, 0xCCCCCC);
+			graphics.drawWordWrap(font, hint, (width - LIST_WIDTH) / 2 + 10, LIST_TOP + 20, LIST_WIDTH - 20, 0xCCCCCC);
 		}
 		graphics.drawCenteredString(font, statusLine(), width / 2, height - STATUS_Y_FROM_BOTTOM, 0xAAAAAA);
 	}
@@ -157,7 +158,9 @@ public class MusicNoteScreen extends Screen {
 	private class TrackList extends ObjectSelectionList<TrackList.Entry> {
 
 		private TrackList(Minecraft minecraft, int width, int height, int y, int itemHeight) {
-			super(minecraft, width, height, y, itemHeight);
+			super(minecraft, width, height, y, y + height, itemHeight);
+			setRenderBackground(false);
+			setRenderTopAndBottom(false);
 			for (String track : tracks) {
 				Entry entry = new Entry(track);
 				addEntry(entry);
@@ -174,7 +177,7 @@ public class MusicNoteScreen extends Screen {
 
 		@Override
 		protected int getScrollbarPosition() {
-			return getX() + LIST_WIDTH - 8;
+			return x0 + LIST_WIDTH - 8;
 		}
 
 		private class Entry extends ObjectSelectionList.Entry<Entry> {
