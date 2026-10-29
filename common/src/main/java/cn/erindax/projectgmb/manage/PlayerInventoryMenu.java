@@ -28,6 +28,7 @@ public class PlayerInventoryMenu extends AbstractContainerMenu {
 	};
 
 	private final MinecraftServer server;
+	private final ServerPlayer target;
 	private final UUID targetId;
 
 	public static void open(ServerPlayer viewer, ServerPlayer target) {
@@ -39,6 +40,7 @@ public class PlayerInventoryMenu extends AbstractContainerMenu {
 	private PlayerInventoryMenu(int containerId, Inventory viewerInventory, ServerPlayer target) {
 		super(MenuType.GENERIC_9x6, containerId);
 		this.server = target.server;
+		this.target = target;
 		this.targetId = target.getUUID();
 		Inventory inv = target.getInventory();
 
@@ -120,7 +122,6 @@ public class PlayerInventoryMenu extends AbstractContainerMenu {
 		if (!WandWhitelist.isAllowed(player) || WandRosterState.get(server).isHidden(targetId)) {
 			return false;
 		}
-		ServerPlayer target = server.getPlayerList().getPlayer(targetId);
-		return target != null && target.isAlive();
+		return server.getPlayerList().getPlayer(targetId) == target && target.isAlive() && !target.hasDisconnected();
 	}
 }
