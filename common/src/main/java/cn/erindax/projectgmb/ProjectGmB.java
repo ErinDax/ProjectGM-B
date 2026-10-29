@@ -16,6 +16,7 @@ import cn.erindax.projectgmb.music.MusicHandler;
 import cn.erindax.projectgmb.network.ModNetwork;
 import cn.erindax.projectgmb.reinforce.Reinforcements;
 import cn.erindax.projectgmb.platform.ModEvents;
+import cn.erindax.projectgmb.seal.Seals;
 import cn.erindax.projectgmb.skin.TextureStore;
 import cn.erindax.projectgmb.vanish.OpVanish;
 import net.minecraft.resources.ResourceLocation;
@@ -47,6 +48,7 @@ public final class ProjectGmB {
 
 	public static void init() {
 		LockNames.reload();
+		Seals.init();
 		ModNetwork.register();
 		DoorLocks.register();
 		LockHandler.init();

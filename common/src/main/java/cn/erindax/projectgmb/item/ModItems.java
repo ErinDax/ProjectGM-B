@@ -46,6 +46,11 @@ public final class ModItems {
 			.stacksTo(1)
 			.rarity(Rarity.EPIC)));
 
+	public static final Item SEALER = register("sealer",
+		new SealerItem(new Item.Properties()
+			.stacksTo(1)
+			.rarity(Rarity.EPIC)));
+
 	public static final Item DANCE_BLOCK = register("dance_block",
 		new BlockItem(ModBlocks.DANCE_BLOCK, new Item.Properties()
 			.rarity(Rarity.RARE)));
@@ -62,6 +67,7 @@ public final class ModItems {
 				output.accept(KEY_LOCK);
 				output.accept(MUSIC_NOTE);
 				output.accept(REINFORCER);
+				output.accept(SEALER);
 				output.accept(BARRIER_PANEL);
 				output.accept(DANCE_BLOCK);
 			})

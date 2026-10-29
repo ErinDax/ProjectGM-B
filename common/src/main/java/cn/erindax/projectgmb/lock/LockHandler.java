@@ -13,6 +13,7 @@ import cn.erindax.projectgmb.lock.net.LockSyncPayload;
 import cn.erindax.projectgmb.lock.net.LockUpdatePayload;
 import cn.erindax.projectgmb.network.Network;
 import cn.erindax.projectgmb.platform.ModEvents;
+import cn.erindax.projectgmb.seal.Seals;
 import cn.erindax.projectgmb.skin.TexturePayload;
 import cn.erindax.projectgmb.skin.TextureStore;
 import net.minecraft.core.BlockPos;
@@ -71,7 +72,7 @@ public final class LockHandler {
 		}
 		BlockPos pos = hit.getBlockPos();
 		BlockState state = level.getBlockState(pos);
-		if (!Locks.isLockable(level, pos, state)) {
+		if (!Locks.isLockable(level, pos, state) || Seals.blocks(player, level, pos, state)) {
 			return InteractionResult.PASS;
 		}
 		ItemStack held = player.getItemInHand(hand);
@@ -211,6 +212,10 @@ public final class LockHandler {
 		BlockPos pos = payload.pos();
 		ServerLevel level = player.serverLevel();
 		BlockState state = level.getBlockState(pos);
+		if (Seals.blocks(player, level, pos, state)) {
+			Seals.notifyBlocked(player);
+			return;
+		}
 		if (payload.setup()) {
 			if (player.blockPosition().distSqr(pos) > MAX_REACH_SQR || !Locks.isLockable(level, pos, state)
 					|| Locks.find(level, pos, state) != null) {
