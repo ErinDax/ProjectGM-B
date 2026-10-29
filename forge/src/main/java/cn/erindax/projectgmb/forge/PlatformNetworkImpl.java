@@ -43,6 +43,7 @@ public final class PlatformNetworkImpl {
 				NetworkRegistry.acceptMissingOr(PROTOCOL), NetworkRegistry.acceptMissingOr(PROTOCOL));
 			Network.Serverbound<?> toServer = serverbound.get(id);
 			Network.Clientbound<?> toClient = clientbound.get(id);
+			channel.addListener((NetworkEvent.ClientCustomPayloadEvent event) -> receive(event, toServer, toClient));
 			channel.addListener((NetworkEvent.ServerCustomPayloadEvent event) -> receive(event, toServer, toClient));
 			CHANNELS.put(id, channel);
 		}
@@ -73,7 +74,7 @@ public final class PlatformNetworkImpl {
 		return channel != null && channel.isRemotePresent(player.connection.connection);
 	}
 
-	private static void receive(NetworkEvent.ServerCustomPayloadEvent event, @Nullable Network.Serverbound<?> toServer,
+	private static void receive(NetworkEvent event, @Nullable Network.Serverbound<?> toServer,
 			@Nullable Network.Clientbound<?> toClient) {
 		NetworkEvent.Context context = event.getSource().get();
 		FriendlyByteBuf buffer = event.getPayload();
