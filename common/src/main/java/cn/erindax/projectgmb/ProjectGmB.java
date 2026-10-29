@@ -19,6 +19,7 @@ import cn.erindax.projectgmb.platform.ModEvents;
 import cn.erindax.projectgmb.skin.TextureStore;
 import cn.erindax.projectgmb.vanish.OpVanish;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.HangingEntity;
@@ -61,10 +62,13 @@ public final class ProjectGmB {
 		ModEvents.SERVER_TICK.register(OpVanish::tick);
 		ModEvents.SERVER_STOPPED.register(server -> OpVanish.clear());
 		ModEvents.USE_BLOCK.register((player, world, hand, hit) -> {
-			if (!(world.getBlockState(hit.getBlockPos()).getBlock() instanceof FlowerPotBlock)) {
+			if (!(player instanceof ServerPlayer serverPlayer)
+					|| !(world.getBlockState(hit.getBlockPos()).getBlock() instanceof FlowerPotBlock)
+					|| !lockAdventureFlowerPot(player)) {
 				return InteractionResult.PASS;
 			}
-			return lockAdventureFlowerPot(player) ? InteractionResult.FAIL : InteractionResult.PASS;
+			serverPlayer.containerMenu.sendAllDataToRemote();
+			return InteractionResult.FAIL;
 		});
 		ModEvents.ATTACK_ENTITY.register((player, world, hand, entity) -> {
 			if (!isProtectedDecoration(entity)) {
