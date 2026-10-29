@@ -1,5 +1,6 @@
 package cn.erindax.projectgmb.mixin;
 
+import cn.erindax.projectgmb.lock.Locks;
 import cn.erindax.projectgmb.reinforce.Reinforcements;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -13,11 +14,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PistonBaseBlock.class)
-public abstract class PistonReinforceMixin {
+public abstract class PistonProtectMixin {
 	@Inject(method = "isPushable", at = @At("HEAD"), cancellable = true)
-	private static void projectgmb$keepReinforced(BlockState state, Level level, BlockPos pos, Direction movementDirection,
+	private static void projectgmb$keepProtected(BlockState state, Level level, BlockPos pos, Direction movementDirection,
 			boolean allowDestroy, Direction pistonFacing, CallbackInfoReturnable<Boolean> cir) {
-		if (level instanceof ServerLevel serverLevel && Reinforcements.isReinforced(serverLevel, pos)) {
+		if (level instanceof ServerLevel serverLevel
+				&& (Reinforcements.isReinforced(serverLevel, pos) || Locks.isProtected(serverLevel, pos))) {
 			cir.setReturnValue(false);
 		}
 	}

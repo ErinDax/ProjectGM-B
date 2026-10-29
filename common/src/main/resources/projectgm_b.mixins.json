@@ -9,10 +9,10 @@
     "ChunkMapAccessor",
     "ChunkMapTrackedEntityAccessor",
     "ChunkMapTrackedEntityMixin",
-    "ExplosionReinforceMixin",
+    "ExplosionProtectMixin",
     "LecternMenuMixin",
     "LivingEntityPushMixin",
-    "PistonReinforceMixin"
+    "PistonProtectMixin"
   ],
   "injectors": {
     "defaultRequire": 1

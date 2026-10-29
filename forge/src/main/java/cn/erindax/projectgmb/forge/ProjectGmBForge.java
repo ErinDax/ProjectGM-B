@@ -33,7 +33,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -82,7 +81,6 @@ public final class ProjectGmBForge {
 		MinecraftForge.EVENT_BUS.addListener(ProjectGmBForge::onUseBlock);
 		MinecraftForge.EVENT_BUS.addListener(ProjectGmBForge::onAttackEntity);
 		MinecraftForge.EVENT_BUS.addListener(ProjectGmBForge::onBeforeBreak);
-		MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, ProjectGmBForge::onAfterBreak);
 	}
 
 	private static void registerContent(RegisterEvent event) {
@@ -132,13 +130,6 @@ public final class ProjectGmBForge {
 		if (event.getLevel() instanceof Level level && !ModEvents.beforeBreak(level, event.getPlayer(), event.getPos(),
 				event.getState(), level.getBlockEntity(event.getPos()))) {
 			event.setCanceled(true);
-		}
-	}
-
-	private static void onAfterBreak(BlockEvent.BreakEvent event) {
-		if (event.getLevel() instanceof Level level) {
-			ModEvents.afterBreak(level, event.getPlayer(), event.getPos(), event.getState(),
-				level.getBlockEntity(event.getPos()));
 		}
 	}
 }

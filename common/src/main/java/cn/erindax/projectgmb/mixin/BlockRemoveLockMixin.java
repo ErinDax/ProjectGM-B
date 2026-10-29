@@ -1,6 +1,7 @@
 package cn.erindax.projectgmb.mixin;
 
 import cn.erindax.projectgmb.lock.DoorLocks;
+import cn.erindax.projectgmb.lock.LockHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -16,5 +17,6 @@ public abstract class BlockRemoveLockMixin {
 	@Inject(method = "onRemove", at = @At("HEAD"))
 	private void projectgmb$clearDoorLock(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston, CallbackInfo ci) {
 		DoorLocks.onBlockRemoved(level, pos, state, newState);
+		LockHandler.onBlockRemoved(level, pos, state, newState);
 	}
 }
