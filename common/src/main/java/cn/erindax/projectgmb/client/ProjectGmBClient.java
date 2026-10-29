@@ -16,6 +16,7 @@ import cn.erindax.projectgmb.client.music.MusicPlayer;
 import cn.erindax.projectgmb.client.music.MusicUploader;
 import cn.erindax.projectgmb.client.reinforce.ReinforceRenderer;
 import cn.erindax.projectgmb.client.render.RemoteTextures;
+import cn.erindax.projectgmb.client.seal.SealRenderer;
 import cn.erindax.projectgmb.entity.net.PatrollerListPayload;
 import cn.erindax.projectgmb.entity.net.PatrollerSettingsPayload;
 import cn.erindax.projectgmb.lock.DoorLockClient;
@@ -36,6 +37,9 @@ import cn.erindax.projectgmb.network.VanishSyncPayload;
 import cn.erindax.projectgmb.reinforce.Reinforcements;
 import cn.erindax.projectgmb.reinforce.net.ReinforceSelectionPayload;
 import cn.erindax.projectgmb.reinforce.net.ReinforceSyncPayload;
+import cn.erindax.projectgmb.seal.Seals;
+import cn.erindax.projectgmb.seal.net.SealSelectionPayload;
+import cn.erindax.projectgmb.seal.net.SealSyncPayload;
 import cn.erindax.projectgmb.skin.TexturePayload;
 import net.minecraft.client.Minecraft;
 
@@ -94,6 +98,8 @@ public final class ProjectGmBClient {
 		);
 		Network.onClient(ReinforceSyncPayload.TYPE, payload -> Reinforcements.setClientView(payload.boxes()));
 		Network.onClient(ReinforceSelectionPayload.TYPE, ReinforceRenderer::select);
+		Network.onClient(SealSyncPayload.TYPE, payload -> Seals.setClientView(payload.boxes()));
+		Network.onClient(SealSelectionPayload.TYPE, SealRenderer::select);
 		ClientEvents.DISCONNECT.register(client -> {
 			RemoteTextures.clear();
 			ClientLocks.clear();
@@ -103,10 +109,13 @@ public final class ProjectGmBClient {
 			MusicUploader.reset();
 			Reinforcements.setClientView(List.of());
 			ReinforceRenderer.clear();
+			Seals.setClientView(List.of());
+			SealRenderer.clear();
 		});
 		LockRenderer.init();
 		MusicBlockRenderer.init();
 		ReinforceRenderer.init();
+		SealRenderer.init();
 		MusicUploader.init();
 		DanceClient.init();
 	}

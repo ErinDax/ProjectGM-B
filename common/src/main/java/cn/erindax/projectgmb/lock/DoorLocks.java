@@ -3,6 +3,7 @@ package cn.erindax.projectgmb.lock;
 import cn.erindax.projectgmb.network.Network;
 import cn.erindax.projectgmb.network.SyncDoorLocksPayload;
 import cn.erindax.projectgmb.platform.ModEvents;
+import cn.erindax.projectgmb.seal.Seals;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -39,6 +40,9 @@ public final class DoorLocks {
 			ItemStack stack = player.getItemInHand(hand);
 			BlockPos pos = hit.getBlockPos();
 			BlockState state = world.getBlockState(pos);
+			if (Seals.blocks(player, world, pos, state)) {
+				return InteractionResult.PASS;
+			}
 			if (isLockItem(stack) && player.isCreative() && hand == InteractionHand.MAIN_HAND) {
 				if (!isLockable(state)) {
 					return InteractionResult.PASS;
