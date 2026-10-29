@@ -17,7 +17,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.level.Level;
-import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
@@ -76,7 +75,6 @@ public final class ProjectGmBNeoForge {
 		NeoForge.EVENT_BUS.addListener(ProjectGmBNeoForge::onUseBlock);
 		NeoForge.EVENT_BUS.addListener(ProjectGmBNeoForge::onAttackEntity);
 		NeoForge.EVENT_BUS.addListener(ProjectGmBNeoForge::onBeforeBreak);
-		NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, ProjectGmBNeoForge::onAfterBreak);
 	}
 
 	private static void registerContent(RegisterEvent event) {
@@ -162,13 +160,6 @@ public final class ProjectGmBNeoForge {
 		if (event.getLevel() instanceof Level level && !ModEvents.beforeBreak(level, event.getPlayer(), event.getPos(),
 				event.getState(), level.getBlockEntity(event.getPos()))) {
 			event.setCanceled(true);
-		}
-	}
-
-	private static void onAfterBreak(BlockEvent.BreakEvent event) {
-		if (event.getLevel() instanceof Level level) {
-			ModEvents.afterBreak(level, event.getPlayer(), event.getPos(), event.getState(),
-				level.getBlockEntity(event.getPos()));
 		}
 	}
 }

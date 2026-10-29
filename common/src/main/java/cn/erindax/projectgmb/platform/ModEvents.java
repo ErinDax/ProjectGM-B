@@ -32,7 +32,6 @@ public final class ModEvents {
 	public static final Event<UseBlock> USE_BLOCK = new Event<>();
 	public static final Event<AttackEntity> ATTACK_ENTITY = new Event<>();
 	public static final Event<BeforeBreak> BEFORE_BREAK = new Event<>();
-	public static final Event<AfterBreak> AFTER_BREAK = new Event<>();
 
 	private ModEvents() {
 	}
@@ -67,13 +66,6 @@ public final class ModEvents {
 		return true;
 	}
 
-	public static void afterBreak(Level level, Player player, BlockPos pos, BlockState state,
-			@Nullable BlockEntity blockEntity) {
-		for (AfterBreak listener : AFTER_BREAK.listeners()) {
-			listener.broken(level, player, pos, state, blockEntity);
-		}
-	}
-
 	@FunctionalInterface
 	public interface UseBlock {
 		InteractionResult use(Player player, Level level, InteractionHand hand, BlockHitResult hit);
@@ -87,10 +79,5 @@ public final class ModEvents {
 	@FunctionalInterface
 	public interface BeforeBreak {
 		boolean allow(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity);
-	}
-
-	@FunctionalInterface
-	public interface AfterBreak {
-		void broken(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity);
 	}
 }

@@ -1,5 +1,6 @@
 package cn.erindax.projectgmb.mixin;
 
+import cn.erindax.projectgmb.lock.Locks;
 import cn.erindax.projectgmb.reinforce.Reinforcements;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
@@ -14,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Explosion.class)
-public abstract class ExplosionReinforceMixin {
+public abstract class ExplosionProtectMixin {
 	@Shadow
 	@Final
 	private Level level;
@@ -24,9 +25,10 @@ public abstract class ExplosionReinforceMixin {
 	private ObjectArrayList<BlockPos> toBlow;
 
 	@Inject(method = "finalizeExplosion", at = @At("HEAD"))
-	private void projectgmb$keepReinforced(boolean spawnParticles, CallbackInfo ci) {
+	private void projectgmb$keepProtected(boolean spawnParticles, CallbackInfo ci) {
 		if (level instanceof ServerLevel serverLevel) {
 			Reinforcements.protect(serverLevel, toBlow);
+			Locks.protect(serverLevel, toBlow);
 		}
 	}
 }

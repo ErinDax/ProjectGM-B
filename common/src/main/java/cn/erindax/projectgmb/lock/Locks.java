@@ -40,6 +40,63 @@ public final class Locks {
 			|| level.getBlockEntity(pos) instanceof Container;
 	}
 
+	public static boolean mayHoldLock(BlockState state) {
+		return state.getBlock() instanceof DoorBlock
+			|| state.getBlock() instanceof TrapDoorBlock
+			|| state.hasBlockEntity();
+	}
+
+	public static boolean sameKind(BlockState state, BlockState newState) {
+		if (state.getBlock() instanceof DoorBlock && newState.getBlock() instanceof DoorBlock) {
+			return state.getValue(DoorBlock.HALF) == newState.getValue(DoorBlock.HALF);
+		}
+		return state.getBlock() instanceof TrapDoorBlock && newState.getBlock() instanceof TrapDoorBlock;
+	}
+
+	public static void protect(ServerLevel level, List<BlockPos> positions) {
+		LockState locks = LockState.get(level);
+		if (!locks.all().isEmpty()) {
+			positions.removeIf(pos -> isProtected(level, locks, pos));
+		}
+	}
+
+	public static boolean isProtected(ServerLevel level, BlockPos pos) {
+		LockState locks = LockState.get(level);
+		return !locks.all().isEmpty() && isProtected(level, locks, pos);
+	}
+
+	@Nullable
+	public static Found supportedDoor(ServerLevel level, BlockPos pos) {
+		BlockPos above = pos.above();
+		BlockState state = level.getBlockState(above);
+		if (!(state.getBlock() instanceof DoorBlock) || state.getValue(DoorBlock.HALF) != DoubleBlockHalf.LOWER) {
+			return null;
+		}
+		return find(level, above, state);
+	}
+
+	private static boolean isProtected(ServerLevel level, LockState locks, BlockPos pos) {
+		if (isLocked(locks, pos, level.getBlockState(pos))) {
+			return true;
+		}
+		BlockPos above = pos.above();
+		BlockState state = level.getBlockState(above);
+		return state.getBlock() instanceof DoorBlock && state.getValue(DoorBlock.HALF) == DoubleBlockHalf.LOWER
+			&& isLocked(locks, above, state);
+	}
+
+	private static boolean isLocked(LockState locks, BlockPos pos, BlockState state) {
+		if (!mayHoldLock(state)) {
+			return false;
+		}
+		for (BlockPos candidate : group(pos, state)) {
+			if (locks.get(candidate) != null) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public static List<BlockPos> group(BlockPos pos, BlockState state) {
 		List<BlockPos> result = new ArrayList<>(2);
 		result.add(pos.immutable());

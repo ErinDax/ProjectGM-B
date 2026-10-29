@@ -56,7 +56,6 @@ public final class ProjectGmBFabric implements ModInitializer {
 		AttackEntityCallback.EVENT.register((player, level, hand, entity, hitResult) ->
 			ModEvents.attackEntity(player, level, hand, entity));
 		PlayerBlockBreakEvents.BEFORE.register(ModEvents::beforeBreak);
-		PlayerBlockBreakEvents.AFTER.register(ModEvents::afterBreak);
 	}
 
 	private static <T extends CustomPacketPayload> void registerClientbound(Network.Clientbound<T> entry) {

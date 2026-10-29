@@ -24,6 +24,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.Containers;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
@@ -54,7 +55,6 @@ public final class LockHandler {
 
 		ModEvents.USE_BLOCK.register(LockHandler::onUseBlock);
 		ModEvents.BEFORE_BREAK.register(LockHandler::onBeforeBreak);
-		ModEvents.AFTER_BREAK.register(LockHandler::onAfterBreak);
 
 		ModEvents.PLAYER_JOIN.register(player -> {
 			Locks.sendAll(player);
@@ -155,24 +155,35 @@ public final class LockHandler {
 			return true;
 		}
 		Locks.Found found = Locks.find(level, pos, state);
+		if (found == null) {
+			found = Locks.supportedDoor(level, pos);
+		}
 		if (found == null || Locks.isOwner(player, found.data())) {
 			return true;
 		}
 		player.displayClientMessage(Component.translatable("lock.projectgm_b.cannot_break", found.data().ownerName()), true);
+		if (player instanceof ServerPlayer serverPlayer) {
+			Locks.resync(serverPlayer, level, pos, state);
+			Locks.resync(serverPlayer, level, found.pos(), level.getBlockState(found.pos()));
+		}
 		return false;
 	}
 
-	private static void onAfterBreak(net.minecraft.world.level.Level world, Player player, BlockPos pos,
-			BlockState state, @Nullable net.minecraft.world.level.block.entity.BlockEntity blockEntity) {
-		if (!(world instanceof ServerLevel level)) {
+	public static void onBlockRemoved(net.minecraft.world.level.Level world, BlockPos pos, BlockState state,
+			BlockState newState) {
+		if (!(world instanceof ServerLevel level) || state.is(newState.getBlock()) || !Locks.mayHoldLock(state)
+				|| Locks.sameKind(state, newState)) {
 			return;
 		}
 		LockState locks = LockState.get(level);
+		if (locks.all().isEmpty()) {
+			return;
+		}
 		for (BlockPos candidate : Locks.group(pos, state)) {
 			if (locks.get(candidate) != null) {
 				LockData removed = Locks.remove(level, candidate);
 				if (removed != null) {
-					player.getInventory().placeItemBackInInventory(lockItemFor(removed.type()));
+					Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), lockItemFor(removed.type()));
 				}
 			}
 		}
