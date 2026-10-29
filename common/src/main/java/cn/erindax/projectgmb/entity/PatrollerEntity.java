@@ -396,6 +396,10 @@ public class PatrollerEntity extends PathfinderMob {
 			living.knockback(PLAYER_KNOCKBACK,
 				Mth.sin(getYRot() * Mth.DEG_TO_RAD), -Mth.cos(getYRot() * Mth.DEG_TO_RAD));
 		}
+		int fireAspect = EnchantmentHelper.getFireAspect(this);
+		if (fireAspect > 0) {
+			target.setSecondsOnFire(fireAspect * 4);
+		}
 		doEnchantDamageEffects(this, target);
 		setLastHurtMob(target);
 		return true;
