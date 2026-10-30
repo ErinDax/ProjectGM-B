@@ -26,8 +26,8 @@ import java.util.UUID;
 public class DanceScreen extends Screen {
 
 	private static final int[] LANE_COLORS = {0xFFC24B99, 0xFF00FFFF, 0xFF12FA05, 0xFFF9393F};
-	private static final int[] LANE_KEYS = {GLFW.GLFW_KEY_S, GLFW.GLFW_KEY_D, GLFW.GLFW_KEY_J, GLFW.GLFW_KEY_K};
-	private static final String[] LANE_KEY_NAMES = {"S", "D", "J", "K"};
+	private static final int[] LANE_KEYS = {GLFW.GLFW_KEY_D, GLFW.GLFW_KEY_F, GLFW.GLFW_KEY_J, GLFW.GLFW_KEY_K};
+	private static final String[] LANE_KEY_NAMES = {"D", "F", "J", "K"};
 	private static final int[] JUDGE_COLORS = {0xFF62F0FF, 0xFF6CFF6C, 0xFFFFC04D, 0xFFB07050, 0xFFFF4D4D};
 	private static final String[] JUDGE_KEYS = {
 		"screen.projectgm_b.dance.judge.sick", "screen.projectgm_b.dance.judge.good", "screen.projectgm_b.dance.judge.bad",
