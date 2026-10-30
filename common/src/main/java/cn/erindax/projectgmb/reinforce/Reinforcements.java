@@ -12,6 +12,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.decoration.HangingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -75,6 +79,24 @@ public final class Reinforcements {
 		if (!state.isEmpty()) {
 			positions.removeIf(state::contains);
 		}
+	}
+
+	public static boolean protectsEntity(Entity entity, DamageSource source) {
+		if (!(entity.level() instanceof ServerLevel level) || source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+			return false;
+		}
+		if (source.getEntity() instanceof Player player && player.isCreative()) {
+			return false;
+		}
+		ReinforceState state = ReinforceState.get(level);
+		if (state.isEmpty()) {
+			return false;
+		}
+		if (state.contains(entity.blockPosition())) {
+			return true;
+		}
+		return entity instanceof HangingEntity hanging
+			&& state.contains(hanging.getPos().relative(hanging.getDirection().getOpposite()));
 	}
 
 	public static boolean contains(List<BoundingBox> boxes, BlockPos pos) {
