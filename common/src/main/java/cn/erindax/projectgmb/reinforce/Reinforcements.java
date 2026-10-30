@@ -114,12 +114,6 @@ public final class Reinforcements {
 		if (player.isSpectator() || !player.getItemInHand(hand).is(ModItems.REINFORCER)) {
 			return InteractionResult.PASS;
 		}
-		if (!player.isCreative()) {
-			if (player instanceof ServerPlayer serverPlayer) {
-				serverPlayer.displayClientMessage(Component.translatable("item.projectgm_b.reinforcer.creative_only"), true);
-			}
-			return InteractionResult.PASS;
-		}
 		if (level instanceof ServerLevel serverLevel && player instanceof ServerPlayer serverPlayer
 				&& !throttled(serverPlayer)) {
 			BlockPos pos = hit.getBlockPos().immutable();

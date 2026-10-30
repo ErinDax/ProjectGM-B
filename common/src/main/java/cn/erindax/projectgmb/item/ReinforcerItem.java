@@ -23,9 +23,6 @@ public class ReinforcerItem extends Item {
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		if (!player.isCreative()) {
-			return InteractionResultHolder.pass(stack);
-		}
 		if (player instanceof ServerPlayer serverPlayer) {
 			Reinforcements.cancelSelection(serverPlayer);
 		}
