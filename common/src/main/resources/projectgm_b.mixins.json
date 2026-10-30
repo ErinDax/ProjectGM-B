@@ -11,6 +11,7 @@
     "ChunkMapAccessor",
     "ChunkMapTrackedEntityAccessor",
     "ChunkMapTrackedEntityMixin",
+    "EntityReinforceMixin",
     "ExplosionProtectMixin",
     "LecternMenuMixin",
     "LivingEntityPushMixin",
